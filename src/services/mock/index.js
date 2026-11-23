@@ -2,6 +2,7 @@
 // Pelakunya selalu pengguna yang sedang masuk di tab ini.
 
 import { ERROR_CODES, ServiceError } from '../errors.js'
+import { PASSWORD_MIN_LENGTH, isEmailValid } from '../../lib/validation.js'
 import * as ops from './ops.js'
 import { addAuthListener, addRoomListener, clone, commit, notifyAuth, randomId, setSession, state } from './store.js'
 
@@ -10,9 +11,13 @@ function requireUid() {
   return state.sessionUid
 }
 
+function emailOf(uid) {
+  return Object.entries(state.db.accounts).find(([, account]) => account.uid === uid)?.[0] ?? ''
+}
+
 function currentUser() {
   const uid = state.sessionUid
-  return uid ? { uid, name: ops.getUserName(uid) } : null
+  return uid ? { uid, name: ops.getUserName(uid), email: emailOf(uid) } : null
 }
 
 function normalizeEmail(email) {
@@ -26,6 +31,9 @@ export async function signUp({ name, email, password }) {
   const key = normalizeEmail(email)
   if (cleanName.length < 1 || cleanName.length > 60) {
     throw new ServiceError(ERROR_CODES.INVALID_ARGUMENT, 'Nama harus 1 sampai 60 karakter.')
+  }
+  if (!isEmailValid(key) || String(password ?? '').length < PASSWORD_MIN_LENGTH) {
+    throw new ServiceError(ERROR_CODES.INVALID_ARGUMENT, 'Email atau kata sandi tidak valid.')
   }
   if (state.db.accounts[key]) {
     throw new ServiceError(ERROR_CODES.EMAIL_TAKEN, 'Email ini sudah terdaftar.')

@@ -56,7 +56,7 @@ describe('mock services', () => {
     await expect(mock.signIn({ email: 'gusti@students.uii.ac.id', password: 'salah' })).rejects.toMatchObject({
       code: 'auth/invalid-credential',
     })
-    await expect(mock.signUp({ name: 'Lain', email: 'gusti@students.uii.ac.id', password: 'x' })).rejects.toMatchObject({
+    await expect(mock.signUp({ name: 'Lain', email: 'gusti@students.uii.ac.id', password: 'rahasia2' })).rejects.toMatchObject({
       code: 'auth/email-already-in-use',
     })
     expect((await mock.signIn({ email: 'gusti@students.uii.ac.id', password: 'rahasia1' })).uid).toBe(user.uid)

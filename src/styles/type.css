@@ -54,3 +54,41 @@
 .label-14-regular { font-family: var(--font-mono); font-size: 14px; font-weight: 400; line-height: normal; letter-spacing: 0; }
 .label-vs-s { font-family: var(--font-mono); font-size: 14px; font-weight: 700; line-height: normal; letter-spacing: 0; }
 .label-vs-l { font-family: var(--font-mono); font-size: 24px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+
+/* Varian desktop: kelas d-<style> menimpa style dasar mulai 1024 px.
+   Dipakai bila Figma memakai style berbeda di frame mobile dan desktop. */
+@media (min-width: 1024px) {
+  .d-angka-timer-l { font-family: var(--font-sans); font-size: 120px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+  .d-angka-timer-m { font-family: var(--font-sans); font-size: 72px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+  .d-angka-hero-l { font-family: var(--font-sans); font-size: 120px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .d-angka-hero-m { font-family: var(--font-sans); font-size: 96px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .d-angka-hero-s { font-family: var(--font-sans); font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .d-angka-stat { font-family: var(--font-sans); font-size: 32px; font-weight: 700; line-height: normal; letter-spacing: -0.01em; }
+  .d-avatar-s { font-family: var(--font-sans); font-size: 14px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+  .d-avatar-m { font-family: var(--font-sans); font-size: 28px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+  .d-avatar-l { font-family: var(--font-sans); font-size: 48px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+  .d-display-56 { font-family: var(--font-sans); font-size: 56px; font-weight: 700; line-height: 1.1; letter-spacing: -1.5px; }
+  .d-heading-48 { font-family: var(--font-sans); font-size: 48px; font-weight: 700; line-height: 1.15; letter-spacing: -0.8px; }
+  .d-heading-40 { font-family: var(--font-sans); font-size: 40px; font-weight: 700; line-height: 1.2; letter-spacing: -0.6px; }
+  .d-heading-28 { font-family: var(--font-sans); font-size: 28px; font-weight: 700; line-height: 1.25; letter-spacing: -0.4px; }
+  .d-heading-24 { font-family: var(--font-sans); font-size: 24px; font-weight: 700; line-height: 1.25; letter-spacing: 0; }
+  .d-title-20 { font-family: var(--font-sans); font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: 0; }
+  .d-body-16-bold { font-family: var(--font-sans); font-size: 16px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+  .d-body-16-semibold { font-family: var(--font-sans); font-size: 16px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+  .d-body-16-regular { font-family: var(--font-sans); font-size: 16px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+  .d-body-14-semibold { font-family: var(--font-sans); font-size: 14px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+  .d-body-14-regular { font-family: var(--font-sans); font-size: 14px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+  .d-caption-13-semibold { font-family: var(--font-sans); font-size: 13px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+  .d-caption-13-regular { font-family: var(--font-sans); font-size: 13px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+  .d-caption-12-semibold { font-family: var(--font-sans); font-size: 12px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+  .d-caption-12-regular { font-family: var(--font-sans); font-size: 12px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+  .d-label-12 { font-family: var(--font-mono); font-size: 12px; font-weight: 500; line-height: normal; letter-spacing: 1.4px; }
+  .d-label-14 { font-family: var(--font-mono); font-size: 14px; font-weight: 500; line-height: normal; letter-spacing: 0; }
+  .d-label-14-regular { font-family: var(--font-mono); font-size: 14px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+  .d-label-vs-s { font-family: var(--font-mono); font-size: 14px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+  .d-label-vs-l { font-family: var(--font-mono); font-size: 24px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+}
+
+[class*='d-angka-'] {
+  font-variant-numeric: tabular-nums;
+}

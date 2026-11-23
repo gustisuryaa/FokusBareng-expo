@@ -15,10 +15,14 @@ defineProps({
 })
 
 const visible = ref(false)
+const field = ref(null)
+
+defineExpose({ focus: () => field.value?.focus() })
 </script>
 
 <template>
   <TextField
+    ref="field"
     v-model="model"
     v-bind="$attrs"
     :label="label"

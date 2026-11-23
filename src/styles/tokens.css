@@ -86,10 +86,23 @@
   --control-md: 56px; /* tombol dan input standar */
   --control-lg: 64px; /* tombol aksi utama di dialog dan Arena */
   --dialog-width: 480px;
+  --form-width: 440px; /* kolom form Auth desktop */
+  --side-panel-width: 720px; /* panel identitas Auth desktop */
+  --avatar-hero: 88px; /* motif versus di panel identitas */
+  --ring-tier-m: 250px; /* ring gelar Dasbor mobile */
+  --ring-tier-d: 360px; /* ring gelar Dasbor desktop */
+  --menu-width: 260px;
+  --dot-size: 6px; /* titik status di Rekor */
+  --header-height-d: 88px;
+  --panel-tier-width: 540px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
 
+  /* Bayangan: hanya menu mengambang (Menu/Profil di Figma) */
+  --shadow-menu: 0 12px 32px rgb(0 0 0 / 0.5);
+
   /* Lapisan */
+  --z-menu: 50;
   --z-overlay: 100;
   --z-toast: 110;
 

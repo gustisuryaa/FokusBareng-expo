@@ -111,3 +111,16 @@ a {
     scroll-behavior: auto !important;
   }
 }
+
+/* Tampil hanya di satu ukuran, untuk teks yang di Figma berbeda antara mobile dan desktop */
+@media (min-width: 1024px) {
+  .only-mobile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .only-desktop {
+    display: none !important;
+  }
+}

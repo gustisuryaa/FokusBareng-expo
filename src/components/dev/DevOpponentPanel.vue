@@ -178,14 +178,19 @@ function toggleMode() {
 <style scoped>
 .dev-panel {
   position: fixed;
-  left: var(--space-12);
-  bottom: var(--space-12);
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
   z-index: var(--z-toast);
   display: flex;
-  flex-direction: column-reverse;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-8);
   max-width: calc(100vw - var(--space-24));
+}
+
+.dev-panel__toggle {
+  opacity: 0.7;
 }
 
 .dev-panel__toggle,
