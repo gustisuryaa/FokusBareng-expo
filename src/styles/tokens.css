@@ -64,6 +64,7 @@
   --space-64: 64px;
 
   /* Radius yang dipakai di Figma Redesign v2 */
+  --radius-12: 12px; /* Toast */
   --radius-16: 16px;
   --radius-20: 20px;
   --radius-24: 24px;
@@ -79,8 +80,18 @@
   --tap-min: 44px;
   --container-tablet: 720px;
   --line-width: 1px;
+  --line-width-strong: 1.5px; /* kartu pemain aktif, field kata sandi di Figma */
+  --control-sm: 48px; /* opsi segmented desktop */
+  --control-row: 52px; /* baris daftar: radio, tangga gelar, kartu pemain */
+  --control-md: 56px; /* tombol dan input standar */
+  --control-lg: 64px; /* tombol aksi utama di dialog dan Arena */
+  --dialog-width: 480px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
+
+  /* Lapisan */
+  --z-overlay: 100;
+  --z-toast: 110;
 
   /* Gerak */
   --motion-fast: 120ms; /* dialog desktop */

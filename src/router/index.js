@@ -45,12 +45,17 @@ const routes = [
   },
 ]
 
-// Halaman pajangan token, hanya ada saat `npm run dev`
+// Halaman pajangan token dan komponen, hanya ada saat `npm run dev`
 if (import.meta.env.DEV) {
   routes.push({
     path: '/dev/gaya',
     name: 'dev-style',
     component: () => import('@/views/dev/StyleGuideView.vue'),
+  })
+  routes.push({
+    path: '/dev/komponen',
+    name: 'dev-components',
+    component: () => import('@/views/dev/ComponentsView.vue'),
   })
 }
 
