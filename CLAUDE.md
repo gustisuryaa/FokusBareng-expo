@@ -72,8 +72,10 @@ src/
   views/               AuthView, DashboardView, LobbyView, ArenaView, ResultView
   router/index.js
   stores/              authStore.js, roomStore.js, battleStore.js
-  services/            index.js (memilih mock/firebase), mock/, firebase/, timerSync.js
-  domain/              referee.js (logika wasit murni, dipakai mock dan klien)
+  services/            index.js (memilih mock/firebase), errors.js, mock/ (store, ops, dev = lawan tiruan), firebase/, timerSync.js
+  domain/              referee.js (logika wasit murni, dipakai mock dan klien), profile.js (statistik turunan)
+  composables/         useToast.js
+  components/dev/      DevOpponentPanel (hanya npm run dev + mock)
   config/gameRules.js
   styles/              tokens.css, type.css, base.css
 database.rules.json

@@ -1,6 +1,8 @@
 # Struktur Data FokusBareng
 
-Versi 1.1, 23 November 2026. Kontrak antara front-end (Gusti) dan back-end (Naufal).
+Versi 1.2, 23 November 2026. Kontrak antara front-end (Gusti) dan back-end (Naufal).
+
+Perubahan v1.2 (Tahap 3 front-end): kontrak services ditambah `setPresence`, `getProfile` mengembalikan statistik turunan lengkap, rumus `focusMin` dibatasi sampai akhir timer, `meta.mode` khusus mock (bagian 1).
 
 Perubahan dari v1: durasi bisa diubah di Lobi, field `startRequested`, Notes wajib maksimal 140 karakter, `history` ditambah `outcome`, `focusMin`, `opponentName`, `at`. Semua ini **belum ada di `database.rules.json`** dan harus ditambahkan (bagian 6).
 
@@ -20,7 +22,7 @@ users/
       {roomId}/
         delta: number       30 | 15 | 5, harus cocok dengan rooms/{roomId}/result
         outcome: "win" | "draw" | "loss"   harus cocok dengan result
-        focusMin: number    floor((result.at - battle.startedAt) / 60000)
+        focusMin: number    floor((min(result.at, startedAt + durationMin*60000) - battle.startedAt) / 60000)
         opponentName: string  1 sampai 60 karakter, hanya untuk tampilan
         at: number          ServerValue.TIMESTAMP
 
@@ -31,6 +33,7 @@ rooms/
       durationMin: number   15 | 25 | 45 | 60, bawaan 25, boleh diubah host sebelum battle
       createdAt: number     ServerValue.TIMESTAMP
       expiresAt: number     maksimal createdAt + 30 menit
+      mode: "demo"          [TERBUKA] hanya di mock untuk ?mode=demo; tidak ada di room normal
     guestUid: string        ditulis sekali oleh tamu
     startRequested: boolean host menekan "Mulai Adu Fokus"; false bila ada yang menekan Batal
     ready/
@@ -109,7 +112,8 @@ signOut()
 onAuthChange(callback)                 // -> unsubscribe
 
 // profil
-getProfile(uid)                        // -> { name, createdAt, points, tier, wins, draws, losses }
+getProfile(uid)                        // -> { name, createdAt, points, tier, nextTier, wins, draws, losses,
+                                       //      totalFocusMin, lastMatch } (dihitung src/domain/profile.js)
 
 // room
 createRoom({ durationMin = 25 })       // -> roomId
@@ -121,6 +125,7 @@ requestStart(roomId)                   // host: "Mulai Adu Fokus"
 cancelStart(roomId)                    // siapa pun: "Batal" di Konfirmasi
 confirmReady(roomId)                   // "Aku siap"
 startBattle(roomId)                    // host saja, dipanggil otomatis saat kedua ready true
+setPresence(roomId, online)            // presence/{uid}; Firebase juga memasang onDisconnect di sini
 answerCheckIn(roomId, index)
 forfeit(roomId)                        // keluar sengaja = kalah
 claimResult(roomId, result)            // dipanggil saat referee.js menyatakan battle selesai
@@ -128,6 +133,8 @@ applyPoints(roomId)                    // menulis history milik sendiri
 listenRoom(roomId, callback)           // -> unsubscribe, callback menerima seluruh isi room
 getServerOffset()                      // -> ms, selisih jam server dan perangkat
 ```
+
+Galat memakai `ServiceError` dengan `code` yang sama untuk mock dan Firebase (`src/services/errors.js`).
 
 Mock juga menyediakan panel dev untuk mensimulasikan lawan: bergabung, siap, terputus, kembali, melewatkan Check-In, dan keluar.
 

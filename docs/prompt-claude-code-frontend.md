@@ -49,7 +49,7 @@ Selesai bila: npm run dev jalan, /dev/gaya bisa aku bandingkan dengan Figma, con
 
 ---
 
-## Tahap 2 · Komponen dasar
+## Tahap 2 · Komponen dasar (selesai 23 Nov, dikerjakan Claude di chat)
 
 ```
 Buat komponen dari section "Komponen v2" di page Redesign v2 (lewat Figma MCP) dan pola di
@@ -67,7 +67,7 @@ Tambahkan halaman /dev/komponen yang memajang semua varian.
 
 ---
 
-## Tahap 3 · Wasit murni dan data tiruan
+## Tahap 3 · Wasit murni dan data tiruan (selesai 23 Nov, dikerjakan Claude di chat)
 
 ```
 /plan Back-end Firebase dikerjakan Naufal secara paralel. Front-end harus jalan penuh tanpa Firebase.

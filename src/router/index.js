@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { isSignedIn } from '@/stores/authStore'
+import { isSignedIn, waitForAuth } from '@/stores/authStore'
 
 const routes = [
   {
@@ -74,7 +74,8 @@ export function safeRedirect(value) {
   return '/'
 }
 
-router.beforeEach((to) => {
+router.beforeEach(async (to) => {
+  await waitForAuth()
   const signedIn = isSignedIn()
 
   if (to.meta.requiresAuth && !signedIn) {

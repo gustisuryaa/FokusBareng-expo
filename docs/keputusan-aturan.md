@@ -1,6 +1,6 @@
 # Keputusan Aturan FokusBareng
 
-Versi 2.1, 23 November 2026. Menjawab pertanyaan hasil Tahap 0 Claude Code (lihat bagian 11).
+Versi 2.2, 23 November 2026. Menjawab pertanyaan hasil Tahap 0 Claude Code (lihat bagian 11).
 
 Penanda: **[USULAN]** dipakai sekarang, tapi nilainya hanya disimpan di `src/config/gameRules.js` karena belum masuk Charter/WBS. **[TERBUKA]** belum diputuskan, jangan dikodekan sebagai final.
 
@@ -68,8 +68,13 @@ Pemain p **kalah** bila salah satu terpenuhi:
   - `E(p) = max(D, lostAt(p) + tol)` bila presence p hilang dalam rentang itu.
 
 Contoh: Check-In keluar di `T`, sinyal p putus di `T+15`.
-- Kembali di `T+22` (offline 7 detik): `E = T+25`, p masih bisa menjawab.
-- Kembali di `T+27` (offline 12 detik): aturan putus terlalu lama terpenuhi di `T+25`, p kalah.
+- Kembali di `T+18` lalu menjawab di `T+19`: jawaban sah, p tidak kalah.
+- Masih terputus di `T+20`: vonis ditunda sampai `E = T+25`. Bila sampai saat itu p belum kembali, p kalah dengan `reason: disconnect`.
+- Kembali di `T+22`: jawaban **tidak bisa** diterima lagi, karena rules menolak respons di luar jendela 20 detik dan rules tidak bisa melihat riwayat presence. p kalah karena Check-In terlewat.
+
+(v2.2: contoh lama menyebut p masih bisa menjawab di `T+22`. Itu bertentangan dengan rules di bagian 5, jadi diganti. `E(p)` hanya menunda vonis dan menentukan alasannya, tidak memperpanjang jendela jawaban.)
+
+Bila satu pemain sudah melewatkan Check-In ke-i dan lawannya belum menjawab Check-In yang sama tapi masih dalam toleransi putus, vonis ditunda sampai toleransi lawan habis, karena hasilnya bisa seri.
 
 **Seri:**
 - Timer habis tanpa ada yang kalah (`reason: timeup`).
@@ -93,7 +98,7 @@ Prinsip: **klien mengklaim hasil, rules memeriksa bukti.**
 - Notes lawan hanya terbaca bila `result` menyatakan lawan itu pemenang.
 - Logika wasit yang sama ditulis sebagai fungsi murni di `src/domain/referee.js`, dipakai oleh mock dan klien Firebase. Rules dan `referee.js` harus selalu menghasilkan keputusan yang sama.
 
-**Celah yang tidak bisa ditutup rules [TERBUKA]:** jadwal Check-In terbaca klien sejak battle mulai (bisa dilihat lewat DevTools).
+**Celah yang tidak bisa ditutup rules (diputuskan: opsi A, Gusti 23 Nov; kabarkan ke Naufal):** jadwal Check-In terbaca klien sejak battle mulai (bisa dilihat lewat DevTools). `referee.js` membaca jadwal hanya lewat `getCheckInWindows()`, jadi pindah ke opsi B cukup mengganti fungsi itu.
 - **Opsi A:** terima sebagai batasan MVP. Klaimnya menjadi "mencegah curang kasual". *Rekomendasi untuk expo.*
 - **Opsi B:** Check-In dipicu klien lawan secara live. Struktur `battle/checkIns` berubah, perlu Catatan Perubahan.
 - **Opsi C:** Cloud Functions. Butuh paket Blaze, di luar anggaran.
@@ -209,5 +214,6 @@ Kesalahan kecil di Figma (header M01w "0 poin", "Putus" di M22, label prototype 
 - [ ] Catatan Perubahan: desktop masuk lingkup. Tempel ke dokumen kelompok, lalu perbarui Charter dan WBS paling lambat 25 Nov.
 - [ ] Catatan Perubahan: milestone modul kode inti (20 Nov) dan jalur kritis Back-End sudah lewat.
 - [ ] Charter/WBS: masukkan angka di bagian 3 dan 9 setelah tim memutuskan.
-- [ ] Putuskan opsi celah Check-In (bagian 5) dan mode demo (bagian 8) sebelum back-end dikunci.
+- [x] Opsi celah Check-In: A (bagian 5).
+- [ ] Putuskan mode demo di Firebase (bagian 8) sebelum back-end dikunci.
 - [ ] Belajar Mandiri tercatat sebagai usulan desain (perlu Catatan Perubahan bila dipertahankan).
