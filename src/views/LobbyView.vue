@@ -334,14 +334,16 @@ const fullDescription = computed(() => {
             :host-online="isOnline(hostUid)"
             :guest-name="guestName"
             :guest-online="isOnline(guestUid)"
+            :self-is-host="isHost"
           />
         </div>
 
-        <div class="lobby__invite">
+        <!-- Tamu ponsel tidak melihat tautan (M21); tamu desktop melihatnya tanpa tombol (D21) -->
+        <div class="lobby__invite" :class="{ 'only-desktop': !isHost }">
           <p class="label-12 lobby__muted only-desktop">
             {{ isHost ? 'UNDANG LAWAN' : `TAUTAN ROOM DARI ${hostName.toUpperCase()}` }}
           </p>
-          <InviteLink :room-id="id" />
+          <InviteLink :room-id="id" :copyable="isHost" />
         </div>
 
         <!-- Pengaturan ponsel: baris Notes dan Durasi yang membuka sheet -->
@@ -383,7 +385,14 @@ const fullDescription = computed(() => {
 
         <div class="lobby__field">
           <p id="duration-label" class="label-12 lobby__muted">{{ isHost ? 'DURASI' : 'DURASI · DIATUR HOST' }}</p>
-          <RadioGroup v-if="isHost && isDesktop" v-model="durationInline" :options="durationOptions" label="Durasi" :disabled="busy" />
+          <RadioGroup
+            v-if="isDesktop"
+            v-model="durationInline"
+            :options="durationOptions"
+            :label="isHost ? 'Durasi' : 'Durasi, diatur host'"
+            :disabled="isHost && busy"
+            :readonly="!isHost"
+          />
           <p v-else class="body-16-semibold">{{ durationMin }} menit</p>
         </div>
 
@@ -567,9 +576,9 @@ const fullDescription = computed(() => {
 
 .lobby__badge {
   padding: var(--space-4) var(--space-12);
-  background-color: var(--bg-elevated);
+  background-color: var(--accent-amber-tint);
   border-radius: var(--radius-pill);
-  color: var(--text-secondary);
+  color: var(--accent-amber);
 }
 
 .lobby__badge--saved {

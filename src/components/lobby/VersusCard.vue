@@ -1,5 +1,6 @@
 <script setup>
 // Figma: Versus di Lobi (M02 96:163, D02 96:1038). Kartu kiri host, kanan tamu.
+// Cincin amber menandai pemain yang sedang memakai perangkat ini (M21, D21: di sisi tamu).
 import AppIcon from '@/components/ui/AppIcon.vue'
 
 defineProps({
@@ -8,6 +9,7 @@ defineProps({
   // null bila tamu belum masuk
   guestName: { type: String, default: null },
   guestOnline: { type: Boolean, default: true },
+  selfIsHost: { type: Boolean, default: true },
 })
 
 const initial = (name) => name?.trim().charAt(0).toUpperCase() || '?'
@@ -16,7 +18,7 @@ const initial = (name) => name?.trim().charAt(0).toUpperCase() || '?'
 <template>
   <div class="versus-card">
     <div class="versus-card__player">
-      <span class="versus-card__avatar versus-card__avatar--host avatar-m d-avatar-l" aria-hidden="true">{{ initial(hostName) }}</span>
+      <span class="versus-card__avatar avatar-m d-avatar-l" :class="{ 'versus-card__avatar--self': selfIsHost }" aria-hidden="true">{{ initial(hostName) }}</span>
       <span class="body-16-bold d-heading-24">{{ hostName }}</span>
       <span class="label-12 versus-card__status" :class="hostOnline ? 'is-online' : 'is-offline'">
         <span class="versus-card__dot" aria-hidden="true" />
@@ -28,7 +30,7 @@ const initial = (name) => name?.trim().charAt(0).toUpperCase() || '?'
 
     <div class="versus-card__player">
       <template v-if="guestName !== null">
-        <span class="versus-card__avatar avatar-m d-avatar-l" aria-hidden="true">{{ initial(guestName) }}</span>
+        <span class="versus-card__avatar avatar-m d-avatar-l" :class="{ 'versus-card__avatar--self': !selfIsHost }" aria-hidden="true">{{ initial(guestName) }}</span>
         <span class="body-16-bold d-heading-24">{{ guestName }}</span>
         <span class="label-12 versus-card__status" :class="guestOnline ? 'is-online' : 'is-offline'">
           {{ guestOnline ? 'ONLINE' : 'TERPUTUS' }}
@@ -71,7 +73,7 @@ const initial = (name) => name?.trim().charAt(0).toUpperCase() || '?'
   border-radius: var(--radius-pill);
 }
 
-.versus-card__avatar--host {
+.versus-card__avatar--self {
   border: var(--focus-ring-width) solid var(--accent-amber);
 }
 

@@ -6,6 +6,8 @@ import { showToast } from '@/composables/useToast'
 
 const props = defineProps({
   roomId: { type: String, required: true },
+  // Tamu hanya melihat tautan, tanpa tombol Bagikan dan Salin (D21)
+  copyable: { type: Boolean, default: true },
 })
 
 const url = computed(() => `${window.location.origin}/room/${props.roomId}`)
@@ -33,10 +35,10 @@ async function share() {
 <template>
   <div class="invite-link">
     <span class="label-14-regular invite-link__url">{{ displayUrl }}</span>
-    <button v-if="canShare" type="button" class="invite-link__icon only-mobile" aria-label="Bagikan tautan" @click="share">
+    <button v-if="copyable && canShare" type="button" class="invite-link__icon only-mobile" aria-label="Bagikan tautan" @click="share">
       <AppIcon name="share" />
     </button>
-    <button type="button" class="invite-link__copy" aria-label="Salin tautan" @click="copy">
+    <button v-if="copyable" type="button" class="invite-link__copy" aria-label="Salin tautan" @click="copy">
       <AppIcon name="copy" />
       <span class="body-16-bold only-desktop">Salin</span>
     </button>

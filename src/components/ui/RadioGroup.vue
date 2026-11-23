@@ -8,6 +8,8 @@ const props = defineProps({
   options: { type: Array, required: true },
   label: { type: String, required: true },
   disabled: { type: Boolean, default: false },
+  // Tampil seperti biasa tapi tidak bisa diubah (tamu melihat durasi pilihan host)
+  readonly: { type: Boolean, default: false },
 })
 
 // Elemen tombol per opsi, untuk memindah fokus saat tombol panah ditekan
@@ -25,7 +27,7 @@ function tabIndexFor(option, index) {
 }
 
 function select(index) {
-  if (props.disabled) return
+  if (props.disabled || props.readonly) return
   model.value = props.options[index].value
   optionEls[index]?.focus()
 }
@@ -61,10 +63,11 @@ function onKeydown(event, index) {
 <template>
   <div
     class="radio-group"
-    :class="{ 'radio-group--disabled': disabled }"
+    :class="{ 'radio-group--disabled': disabled, 'radio-group--readonly': readonly }"
     role="radiogroup"
     :aria-label="label"
     :aria-disabled="disabled ? 'true' : undefined"
+    :aria-readonly="readonly ? 'true' : undefined"
   >
     <button
       v-for="(option, index) in options"
@@ -161,6 +164,10 @@ function onKeydown(event, index) {
   cursor: not-allowed;
 }
 
+.radio-group--readonly .radio-group__option {
+  cursor: default;
+}
+
 .radio-group--disabled .radio-group__mark,
 .radio-group--disabled .radio-group__hint {
   color: var(--text-disabled);
@@ -214,7 +221,7 @@ function onKeydown(event, index) {
 }
 
 @media (min-width: 1024px) and (hover: hover) {
-  .radio-group:not(.radio-group--disabled) .radio-group__option:not(.radio-group__option--checked):hover {
+  .radio-group:not(.radio-group--disabled):not(.radio-group--readonly) .radio-group__option:not(.radio-group__option--checked):hover {
     background-color: var(--bg-elevated);
   }
 }
