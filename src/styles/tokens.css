@@ -95,6 +95,12 @@
   --dot-size: 6px; /* titik status di Rekor */
   --header-height-d: 88px;
   --panel-tier-width: 540px;
+  --panel-versus-width: 660px; /* panel versus Lobi desktop */
+  --avatar-versus-m: 64px;
+  --avatar-versus-d: 128px;
+  --notes-height-m: 112px;
+  --notes-height-d: 132px;
+  --dot-presence: 8px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
 

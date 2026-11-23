@@ -78,7 +78,9 @@ watch(
       document.body.style.overflow = 'hidden'
       await nextTick()
       // Elemen bertanda data-autofocus didahulukan, misalnya tombol "Tetap fokus"
-      const target = panel.value?.querySelector('[data-autofocus]') ?? getFocusable()[0] ?? panel.value
+      const marked = panel.value?.querySelector('[data-autofocus]')
+      const markedTarget = marked?.matches(FOCUSABLE) ? marked : marked?.querySelector(FOCUSABLE)
+      const target = markedTarget ?? getFocusable()[0] ?? panel.value
       target?.focus()
     } else {
       restoreFocus()
