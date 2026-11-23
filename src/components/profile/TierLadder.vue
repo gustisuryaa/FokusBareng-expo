@@ -135,7 +135,8 @@ defineProps({
 
 .ladder-track__labels {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-8);
   padding: 0;
   list-style: none;
 }
@@ -157,9 +158,25 @@ defineProps({
 
 .ladder-track__name {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-8);
+  justify-content: inherit;
+  gap: var(--space-4) var(--space-8);
+  max-width: 100%;
   color: var(--text-secondary);
+}
+
+.ladder-track__labels li {
+  min-width: 0;
+  text-align: center;
+}
+
+.ladder-track__labels li:first-child {
+  text-align: left;
+}
+
+.ladder-track__labels li:last-child {
+  text-align: right;
 }
 
 .ladder-track__name--current {

@@ -10,7 +10,7 @@ import PasswordField from '@/components/ui/PasswordField.vue'
 import TextField from '@/components/ui/TextField.vue'
 import { NORMAL_RULES } from '@/config/gameRules'
 import { roomIdFromPath } from '@/lib/roomLabel'
-import { NAME_MAX_LENGTH, isEmailValid, isNameValid, isPasswordValid } from '@/lib/validation'
+import { NAME_MAX_LENGTH, PASSWORD_MIN_LENGTH, isEmailValid, isNameValid, isPasswordValid } from '@/lib/validation'
 import { safeRedirect } from '@/router'
 import { ERROR_CODES, signIn, signUp } from '@/services'
 
@@ -48,7 +48,7 @@ const MESSAGES = {
   nameRequired: 'Nama tampilan wajib diisi.',
   nameTooLong: `Nama tampilan maksimal ${NAME_MAX_LENGTH} karakter.`,
   email: 'Format email belum benar. Contoh: nama@students.uii.ac.id',
-  password: 'Kata sandi minimal 6 karakter.',
+  password: `Kata sandi minimal ${PASSWORD_MIN_LENGTH} karakter.`,
   wrongCredential: 'Email atau kata sandi salah. Coba lagi.',
   emailTaken: 'Email ini sudah terdaftar. Masuk saja, atau pakai email lain.',
   network: 'Tidak bisa terhubung ke server. Cek koneksi internet, lalu coba lagi.',
@@ -200,7 +200,7 @@ const submitLabel = computed(() => {
             v-model="form.password"
             label="Kata sandi"
             placeholder="Kata sandi"
-            :hint="isRegister ? 'Minimal 6 karakter.' : ''"
+            :hint="isRegister ? `Minimal ${PASSWORD_MIN_LENGTH} karakter.` : ''"
             :autocomplete="isRegister ? 'new-password' : 'current-password'"
             :error="errors.password"
             :disabled="submitting"

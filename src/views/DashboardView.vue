@@ -296,6 +296,7 @@ onMounted(loadProfile)
 
 .dashboard__stat dd {
   margin: 0;
+  white-space: nowrap;
 }
 
 .dashboard__stat-label {
@@ -388,9 +389,11 @@ onMounted(loadProfile)
     padding: 0 var(--space-40) var(--space-40);
   }
 
+  /* Panel gelar dan kolom kanan berbagi lebar 2 : 3, panel gelar maksimal selebar Figma (540) */
   .dashboard__tier {
     display: flex;
-    flex: 0 1 var(--panel-tier-width);
+    flex: 2 1 0;
+    max-width: var(--panel-tier-width);
     align-items: center;
     justify-content: center;
     min-width: 0;
@@ -406,7 +409,7 @@ onMounted(loadProfile)
 
   .dashboard__side {
     display: flex;
-    flex: 1;
+    flex: 3 1 0;
     flex-direction: column;
     gap: var(--space-24);
     min-width: 0;

@@ -137,7 +137,9 @@ const desktopStatus = computed(() => {
 /* Desktop: kartu besar */
 @media (min-width: 1024px) {
   .presence-chip {
-    flex: 0 0 var(--arena-card-width);
+    /* Boleh menyusut di 1024 px supaya dua kartu dan ring tetap muat */
+    flex: 0 1 var(--arena-card-width);
+    min-width: 0;
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-16);

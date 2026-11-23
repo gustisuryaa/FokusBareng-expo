@@ -530,6 +530,7 @@ const opponentName = computed(() => names[opponentUid.value] || 'lawan')
   .arena__center {
     flex: 1;
     order: 2;
+    min-width: 0;
   }
 
   .arena__player--opponent {

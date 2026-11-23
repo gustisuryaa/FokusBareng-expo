@@ -81,7 +81,7 @@ const clock = computed(() => {
 
 @media (min-width: 1024px) {
   .timer-ring {
-    width: min(var(--ring-timer-d), 52dvh);
+    width: min(var(--ring-timer-d), 52dvh, 100%);
   }
 
   .timer-ring__center {
