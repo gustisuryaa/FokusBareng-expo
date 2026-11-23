@@ -1,0 +1,89 @@
+/*
+  Token visual FokusBareng.
+  Warna dicocokkan dengan koleksi Variables "FokusBareng" (mode Gelap) di Figma
+  RQqGaXQwvy338yjrnRGBvd pada 23 Nov 2026. Nama: `bg/base` di Figma menjadi `--bg-base`.
+
+  Breakpoint (tidak bisa memakai variabel CSS di media query):
+    @media (min-width: 640px)   tablet, tata letak ponsel di wadah --container-tablet
+    @media (min-width: 1024px)  desktop
+*/
+
+:root {
+  /* Latar */
+  --bg-base: #0b0b0c;
+  --bg-surface: #161618;
+  --bg-elevated: #1f1f23;
+  --bg-pressed: #26262b;
+
+  /* Garis */
+  --line-subtle: #3a3a40;
+  --line-input: #707078;
+
+  /* Teks */
+  --text-primary: #f5f5f4;
+  --text-secondary: #a1a1a6;
+  --text-disabled: #5c5c63;
+  --text-on-accent: #0b0b0c;
+
+  /* Aksen */
+  --accent-amber: #f5b700;
+  --accent-amber-hover: #ffc933;
+  --accent-amber-pressed: #d9a200;
+  --accent-amber-tint: #2a2208;
+  --accent-jawara: #6cb6ff; /* hanya untuk lencana Jawara */
+
+  /* Status */
+  --status-success: #3dd68c;
+  --status-success-tint: #0f2a1e;
+  --status-danger: #ff6369;
+  --status-danger-line: #e5484d;
+
+  /* Overlay */
+  --overlay-scrim: rgb(0 0 0 / 0.64);
+
+  /*
+    Spacing skala 4. Figma Redesign v2 kadang memakai nilai setengah langkah
+    (6, 10, 14, 18). Nilai itu sengaja tidak dijadikan token. Aturan pembulatan:
+    - gap di dalam komponen (ikon ke teks, label ke nilai, antar chip): ke bawah
+      6→4, 10→8, 14→12, 18→16
+    - padding komponen dan jarak antar bagian atau kartu: ke atas
+      6→8, 10→12, 14→16, 18→20
+    - tinggi tombol, input, dan tap target tetap minimal --tap-min setelah pembulatan
+  */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-28: 28px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-56: 56px;
+  --space-64: 64px;
+
+  /* Radius yang dipakai di Figma Redesign v2 */
+  --radius-16: 16px;
+  --radius-20: 20px;
+  --radius-24: 24px;
+  --radius-28: 28px;
+  --radius-32: 32px;
+  --radius-pill: 999px;
+
+  /* Font */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Ukuran */
+  --tap-min: 44px;
+  --container-tablet: 720px;
+  --line-width: 1px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  /* Gerak */
+  --motion-fast: 120ms; /* dialog desktop */
+  --motion-base: 200ms; /* pindah halaman, sheet, tab, menu */
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+}

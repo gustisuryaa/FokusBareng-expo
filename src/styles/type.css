@@ -1,0 +1,56 @@
+/*
+  Text style FokusBareng, satu kelas per style di Figma.
+  Nama kelas: `Body/16 SemiBold` menjadi `.body-16-semibold`.
+  Line height "auto" di Figma = `normal`. Letter spacing persen di Figma = `em`.
+*/
+
+/* Angka: timer dan hitung mundur memakai tabular-nums supaya lebarnya tidak bergoyang */
+.angka-timer-l,
+.angka-timer-m,
+.angka-hero-l,
+.angka-hero-m,
+.angka-hero-s,
+.angka-stat {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.angka-timer-l { font-size: 120px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+.angka-timer-m { font-size: 72px; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
+.angka-hero-l { font-size: 120px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+.angka-hero-m { font-size: 96px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+.angka-hero-s { font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+.angka-stat { font-size: 32px; font-weight: 700; line-height: normal; letter-spacing: -0.01em; }
+
+/* Inisial di avatar */
+.avatar-s { font-family: var(--font-sans); font-size: 14px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+.avatar-m { font-family: var(--font-sans); font-size: 28px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+.avatar-l { font-family: var(--font-sans); font-size: 48px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+
+/* Judul */
+.display-56 { font-family: var(--font-sans); font-size: 56px; font-weight: 700; line-height: 1.1; letter-spacing: -1.5px; }
+.heading-48 { font-family: var(--font-sans); font-size: 48px; font-weight: 700; line-height: 1.15; letter-spacing: -0.8px; }
+.heading-40 { font-family: var(--font-sans); font-size: 40px; font-weight: 700; line-height: 1.2; letter-spacing: -0.6px; }
+.heading-28 { font-family: var(--font-sans); font-size: 28px; font-weight: 700; line-height: 1.25; letter-spacing: -0.4px; }
+.heading-24 { font-family: var(--font-sans); font-size: 24px; font-weight: 700; line-height: 1.25; letter-spacing: 0; }
+.title-20 { font-family: var(--font-sans); font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: 0; }
+
+/* Isi */
+.body-16-bold { font-family: var(--font-sans); font-size: 16px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+.body-16-semibold { font-family: var(--font-sans); font-size: 16px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+.body-16-regular { font-family: var(--font-sans); font-size: 16px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+.body-14-semibold { font-family: var(--font-sans); font-size: 14px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+.body-14-regular { font-family: var(--font-sans); font-size: 14px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+
+/* Keterangan, minimal 12 px */
+.caption-13-semibold { font-family: var(--font-sans); font-size: 13px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+.caption-13-regular { font-family: var(--font-sans); font-size: 13px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+.caption-12-semibold { font-family: var(--font-sans); font-size: 12px; font-weight: 600; line-height: normal; letter-spacing: 0; }
+.caption-12-regular { font-family: var(--font-sans); font-size: 12px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+
+/* Label mono */
+.label-12 { font-family: var(--font-mono); font-size: 12px; font-weight: 500; line-height: normal; letter-spacing: 1.4px; }
+.label-14 { font-family: var(--font-mono); font-size: 14px; font-weight: 500; line-height: normal; letter-spacing: 0; }
+.label-14-regular { font-family: var(--font-mono); font-size: 14px; font-weight: 400; line-height: normal; letter-spacing: 0; }
+.label-vs-s { font-family: var(--font-mono); font-size: 14px; font-weight: 700; line-height: normal; letter-spacing: 0; }
+.label-vs-l { font-family: var(--font-mono); font-size: 24px; font-weight: 700; line-height: normal; letter-spacing: 0; }
