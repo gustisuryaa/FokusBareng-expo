@@ -107,6 +107,7 @@
   --avatar-arena-d: 72px;
   --trail-tick-h: 16px; /* penanda Check-In di Jejak */
   --trail-tick-w: 3px;
+  --panel-result-width: 640px; /* panel hasil desktop */
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
 
