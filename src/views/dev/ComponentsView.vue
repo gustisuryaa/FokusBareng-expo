@@ -114,12 +114,12 @@ const tierSizes = [14, 16, 20, 22, 28]
     <section class="dev-section" aria-labelledby="sec-presence">
       <h2 id="sec-presence" class="label-12 dev-muted">KARTU PEMAIN (PRESENCE)</h2>
       <div class="dev-presence">
-        <PresenceChip initial="G" name="Kamu" detail="2 Check-In" />
-        <PresenceChip initial="N" name="Lawan" detail="2 Check-In" />
+        <PresenceChip initial="G" name="Kamu" self :answered-count="2" />
+        <PresenceChip initial="N" name="Lawan" :answered-count="2" />
       </div>
       <div class="dev-presence">
-        <PresenceChip initial="G" name="Kamu" detail="Terputus · 6 dtk" connection="disconnected" />
-        <PresenceChip initial="N" name="Lawan" detail="2 Check-In" />
+        <PresenceChip initial="G" name="Kamu" self connection="disconnected" :seconds-left="6" />
+        <PresenceChip initial="N" name="Lawan" :answered-count="2" />
       </div>
     </section>
 

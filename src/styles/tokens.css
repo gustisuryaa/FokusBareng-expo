@@ -101,6 +101,12 @@
   --notes-height-m: 112px;
   --notes-height-d: 132px;
   --dot-presence: 8px;
+  --ring-timer-m: 310px; /* ring sisa waktu Arena mobile */
+  --ring-timer-d: 480px;
+  --arena-card-width: 280px; /* kartu pemain Arena desktop */
+  --avatar-arena-d: 72px;
+  --trail-tick-h: 16px; /* penanda Check-In di Jejak */
+  --trail-tick-w: 3px;
   --focus-ring-width: 2px;
   --focus-ring-offset: 2px;
 
