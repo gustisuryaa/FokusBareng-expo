@@ -1,6 +1,6 @@
 # Keputusan Aturan FokusBareng
 
-Versi 2, 23 November 2026. Menggantikan versi 19 November.
+Versi 2.1, 23 November 2026. Menjawab pertanyaan hasil Tahap 0 Claude Code (lihat bagian 11).
 
 Penanda: **[USULAN]** dipakai sekarang, tapi nilainya hanya disimpan di `src/config/gameRules.js` karena belum masuk Charter/WBS. **[TERBUKA]** belum diputuskan, jangan dikodekan sebagai final.
 
@@ -10,23 +10,28 @@ Bila isi dokumen ini bertentangan dengan Charter, WBS, atau Catatan Perubahan, d
 
 - Responsif, mobile-first. **Desktop masuk lingkup resmi** (keputusan 23 Nov, dicatat di Catatan Perubahan).
 - Tata letak desktop: Dasbor 2 kolom, Lobi dengan Set Timer (WBS 2.3.1) dan Notes (WBS 2.3.2) sebagai **panel di halaman**, bukan popup. Arena memakai layout versus. Hasil 2 kolom.
-- Tablet memakai tata letak ponsel dengan wadah maksimal 720 px. **[TERBUKA]** belum dikonfirmasi tim.
+- Tablet memakai tata letak ponsel dengan wadah maksimal 720 px. Dipakai sekarang. Nilainya satu variabel CSS, jadi mudah diubah kalau tim memutuskan lain.
 - Dikodekan: Auth, Dasbor Profil dan Gelar, Lobi Room via tautan undangan, Arena Timer dengan wasit otomatis, Layar Hasil.
 - Hanya didesain: Belajar Mandiri, Pemilihan Teknik Belajar, Pencarian Teman, Add Friend.
 - Di luar proyek: aplikasi native, obrolan, pencarian lawan acak, leaderboard.
 
 ## 2. Alur satu battle
 
-1. Host membuat room dan memilih durasi 15, 25, 45, atau 60 menit. Room berlaku 30 menit sejak dibuat.
-2. Host membagikan tautan `/room/{roomId}`. Tamu membuka tautan. Kalau belum masuk, tamu diarahkan ke Auth dulu, lalu kembali ke room yang sama.
-3. Satu room maksimal 2 orang. Orang ketiga melihat layar "room penuh". Tautan kedaluwarsa atau salah menampilkan "tautan tidak berlaku".
-4. Kedua pemain mengisi Notes (maksimal 280 karakter, boleh kosong), lalu menekan Siap.
-5. Konfirmasi Kefokusan (WBS 2.3.4) muncul sebelum Arena.
-6. Setelah keduanya siap, host menulis data battle: waktu mulai dari server dan jadwal Check-In. Sejak itu Notes terkunci.
-7. Arena berjalan. Check-In muncul **bersamaan** untuk kedua pemain.
-8. Battle berakhir dengan satu hasil: menang/kalah atau seri.
-9. Layar Hasil. Yang kalah melihat popup Notes pemenang. Kalau seri, Notes tidak ditampilkan ke siapa pun.
-10. Tombol "Buat room baru" kembali ke Dasbor dan membuka pembuatan room dengan durasi sebelumnya sudah terisi.
+Mengikuti Figma (page User Flow).
+
+1. Host menekan Buat Room di Dasbor. Room langsung dibuat dengan durasi bawaan 25 menit dan host masuk ke Lobi (M02 · D02). Room berlaku 30 menit sejak dibuat.
+2. **Durasi dipilih di Lobi** (sheet M02d di mobile, panel di desktop). Host boleh mengubahnya selama battle belum mulai.
+3. Host membagikan tautan `/room/{roomId}`. Tamu membuka tautan. Kalau belum masuk, tamu diarahkan ke Masuk atau Daftar (keduanya dengan banner undangan), lalu kembali ke room yang sama.
+4. Satu room maksimal 2 orang. Orang ketiga melihat "room penuh" (M27). Tautan kedaluwarsa atau salah: "tautan tidak berlaku" (M26).
+5. **Notes wajib diisi kedua pemain**, 1 sampai 140 karakter (mengikuti Figma). Notes adalah konsekuensi yang ditanggung yang kalah, jadi battle tanpa Notes kehilangan intinya. Lobi menampilkan "Notes 1/2" atau "2/2".
+6. Setelah tamu ada dan Notes 2/2, host menekan **"Mulai Adu Fokus"**. Ini menulis `startRequested = true`.
+7. Kedua pemain melihat **Konfirmasi Kefokusan** (WBS 2.3.4; M20 host, M20g tamu). Masing-masing menekan **"Aku siap"**, yang menulis `ready/{uid} = true`.
+8. **Batal** di Konfirmasi oleh siapa pun: `startRequested = false` dan kedua `ready` dihapus. Keduanya kembali ke Lobi.
+9. Setelah kedua `ready` bernilai true, host menulis data battle: waktu mulai dari server dan jadwal Check-In. Sejak itu durasi dan Notes terkunci.
+10. Arena berjalan. Check-In muncul **bersamaan** untuk kedua pemain.
+11. Battle berakhir dengan satu hasil: menang/kalah atau seri.
+12. Layar Hasil. Yang kalah melihat popup Notes pemenang. Kalau seri, Notes tidak ditampilkan ke siapa pun.
+13. **"Buat room baru"** langsung membuat room baru dengan durasi yang sama seperti room sebelumnya, lalu membuka Lobi host. Tautan baru harus dibagikan lagi.
 
 ## 3. Angka aturan main [USULAN]
 
@@ -39,6 +44,9 @@ Bila isi dokumen ini bertentangan dengan Charter, WBS, atau Catatan Perubahan, d
 | Tanpa Check-In di | 60 detik terakhir |
 | Toleransi putus sinyal atau tab tidak aktif | 10 detik |
 | Selisih timer antar perangkat | maksimal 3 detik |
+| Ambang "Menjelang akhir" (M03b) | 60 detik terakhir (demo: 30 detik) |
+| Panjang Notes | 1 sampai 140 karakter, wajib |
+| Durasi bawaan saat room dibuat | 25 menit |
 | Poin | menang +30, seri +15, kalah +5 |
 
 ## 4. Aturan kalah dan seri
@@ -110,12 +118,29 @@ Berlaku untuk `tests/referee.test.js` (fungsi murni) dan `tests/rules.test.js` (
 12. Keluar sengaja: pemain itu kalah dengan `reason: forfeit`.
 13. Poin satu room tidak bisa diklaim dua kali, dan nilainya harus cocok dengan hasil.
 14. Orang ketiga tidak bisa masuk room yang sudah berisi 2 orang.
+15. Battle tidak bisa dimulai kalau Notes belum 2/2 atau salah satu `ready` belum true.
+16. Durasi dan Notes tidak bisa diubah setelah battle dimulai. Notes kosong atau lebih dari 140 karakter ditolak.
 
 ## 7. Alur pendukung
 
 - **Undangan saat belum masuk:** route guard menyimpan tujuan, arahkan ke Auth (dengan banner undangan), setelah masuk kembali ke `/room/:id`.
 - **Refresh di Arena:** saat dimuat, ambil data room, hitung sisa waktu dari waktu server, pulihkan state yang sesuai.
 - **Keluar akun:** lewat menu profil di Dasbor (WBS 3.2.3). Penting untuk expo supaya pengunjung berikutnya bisa masuk di perangkat yang sama.
+- **Membuka tautan room**, ditentukan dari siapa yang membuka dan status room:
+
+| Yang membuka | Status room | Diarahkan ke |
+|---|---|---|
+| Host | menunggu / siap | Lobi host |
+| Tamu yang sudah tercatat | menunggu / siap | Lobi tamu |
+| Host atau tamu | berjalan | Arena (dipulihkan dari waktu server) |
+| Host atau tamu | selesai | Hasil |
+| Orang lain | sudah ada tamu | M27 room penuh |
+| Siapa pun | kedaluwarsa, tidak ada, atau salah | M26 tautan tidak berlaku |
+
+- **Room kedaluwarsa saat host menunggu:** Lobi host berganti ke M26, dengan tombol "Buat room baru".
+- **Lawan meninggalkan Lobi sebelum mulai:** `guestUid` tidak bisa dihapus. Lobi menampilkan chip presence lawan "Terputus". Host bisa menunggu atau membuat room baru. Tidak ada fitur mengeluarkan tamu.
+- **Wake Lock tidak didukung:** tampilkan Toast sekali di awal Arena, lalu battle tetap jalan. Teksnya di bagian 10.
+- **Tombol "Teman" dan "Belajar mandiri" di Dasbor tidak dirender di kode.** Kedua fitur itu hanya didesain (aturan keras 11), dan tombol yang tidak mengarah ke mana pun dilarang. Saat expo, keduanya ditunjukkan lewat prototype Figma.
 
 ## 8. Mode demo expo [USULAN]
 
@@ -130,7 +155,7 @@ Pengunjung expo tidak akan duduk 15 menit.
 | Batas respons | 20 detik | 20 detik |
 | Poin | +30 / +15 / +5 | tidak ada poin |
 
-Dipilih lewat `?mode=demo`. **[TERBUKA]** `database.rules.json` sekarang mewajibkan `offsetMs >= 240000` dan durasi 15/25/45/60, jadi mode demo ditolak rules. Pilihannya: rules mengizinkan `meta.mode = "demo"` dengan batas terpisah, atau mode demo hanya berjalan di mock.
+Dipilih lewat `?mode=demo`. **Mock boleh memakai mode demo sekarang.** Untuk Firebase masih **[TERBUKA]**: `database.rules.json` mewajibkan `offsetMs >= 240000` dan durasi 15/25/45/60, jadi mode demo ditolak rules. Pilihannya: rules mengizinkan `meta.mode = "demo"` dengan batas terpisah, atau demo expo memakai mock.
 
 ## 9. Poin dan gelar [USULAN]
 
@@ -146,7 +171,40 @@ Menang hanya terjadi bila tepat satu pemain gagal, jadi sebagian besar battle ke
 
 Akun baru: 0 poin, gelar Teralihkan.
 
-## 10. Dokumen yang perlu disamakan
+## 10. Teks yang belum ada di Figma [USULAN]
+
+Draf dari Claude. Gusti boleh mengganti kalimatnya, tapi strukturnya dipertahankan: judul hasil tetap memakai pola layar yang sudah ada (M16 · D11 untuk seri, M09 · D06 untuk menang), hanya baris penjelasnya yang berbeda.
+
+| Kasus | Layar dasar | Baris penjelas |
+|---|---|---|
+| Seri, timer habis | M16 · D11 | (teks Figma yang sudah ada) |
+| Seri, keduanya melewatkan Check-In | M16 · D11 | Kalian berdua melewatkan Check-In ke-{n}. |
+| Seri, keduanya terputus | M16 · D11 | Kalian berdua terputus lebih dari 10 detik. |
+| Menang, lawan keluar | M09 · D06 | {Lawan} keluar dari Arena. |
+| Wake Lock tidak didukung (Toast) | Arena | Layar bisa mati sendiri di perangkat ini. Matikan kunci layar otomatis selama battle. |
+
+Istilah koneksi diseragamkan menjadi **"Terputus"** (bukan "Putus") di semua layar.
+
+## 11. Jawaban atas pertanyaan Tahap 0
+
+| No | Pertanyaan | Jawaban |
+|---|---|---|
+| 1 | Dokumen resmi | Gusti menaruh Charter, WBS v4, dan Catatan Perubahan di `docs/resmi/`. Sampai saat itu, lingkup mengikuti CLAUDE.md aturan 11. |
+| 2 | Notes | 140 karakter, wajib (bagian 2 langkah 5). |
+| 3 | Durasi dan "Buat room baru" | Durasi dipilih di Lobi. "Buat room baru" memakai durasi room sebelumnya (bagian 2). |
+| 4 | Siap, Mulai, Batal | `startRequested` = host menekan Mulai. `ready/{uid}` = "Aku siap" di Konfirmasi. Batal mengosongkan keduanya (bagian 2 langkah 6 sampai 8). |
+| 5 | `#XXXX` | 4 karakter terakhir `roomId` dalam huruf kapital, hanya sebagai penanda visual supaya kedua pemain yakin berada di room yang sama. Tidak bisa dipakai untuk bergabung. |
+| 6 | Statistik Dasbor | Dipertahankan. `history` ditambah `outcome`, `focusMin`, `opponentName`, `at` (lihat `struktur-data.md`). |
+| 7 | Teks hasil yang belum ada | Bagian 10. |
+| 8 | Tombol Teman dan Belajar mandiri | Tidak dirender di kode (bagian 7). |
+| 9 | Kasus tautan room | Tabel di bagian 7. |
+| 10 | Ambang Menjelang akhir | 60 detik, demo 30 detik (bagian 3). |
+| 11 | Mock dengan mode demo | Boleh (bagian 8). |
+| 12 | Wadah tablet | 720 px, dipakai sekarang (bagian 1). |
+
+Kesalahan kecil di Figma (header M01w "0 poin", "Putus" di M22, label prototype "8 dtk") **tidak menghalangi koding**. Kode mengikuti dokumen ini. Figma dirapikan terpisah.
+
+## 12. Dokumen yang perlu disamakan
 
 - [ ] Catatan Perubahan: desktop masuk lingkup. Tempel ke dokumen kelompok, lalu perbarui Charter dan WBS paling lambat 25 Nov.
 - [ ] Catatan Perubahan: milestone modul kode inti (20 Nov) dan jalur kritis Back-End sudah lewat.

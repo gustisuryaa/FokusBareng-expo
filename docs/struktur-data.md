@@ -1,6 +1,8 @@
 # Struktur Data FokusBareng
 
-Versi 1, 23 November 2026. Kontrak antara front-end (Gusti) dan back-end (Naufal).
+Versi 1.1, 23 November 2026. Kontrak antara front-end (Gusti) dan back-end (Naufal).
+
+Perubahan dari v1: durasi bisa diubah di Lobi, field `startRequested`, Notes wajib maksimal 140 karakter, `history` ditambah `outcome`, `focusMin`, `opponentName`, `at`. Semua ini **belum ada di `database.rules.json`** dan harus ditambahkan (bagian 6).
 
 - Implementasi mock di front-end **wajib** memakai bentuk yang sama persis, supaya pergantian ke Firebase cukup lewat `VITE_DATA_SOURCE`.
 - Kalau ada perubahan, ubah file ini dulu, lalu `database.rules.json`, `src/domain/referee.js`, dan implementasi mock pada hari yang sama.
@@ -17,19 +19,24 @@ users/
     history/
       {roomId}/
         delta: number       30 | 15 | 5, harus cocok dengan rooms/{roomId}/result
+        outcome: "win" | "draw" | "loss"   harus cocok dengan result
+        focusMin: number    floor((result.at - battle.startedAt) / 60000)
+        opponentName: string  1 sampai 60 karakter, hanya untuk tampilan
+        at: number          ServerValue.TIMESTAMP
 
 rooms/
   {roomId}/
     meta/
       hostUid: string
-      durationMin: number   15 | 25 | 45 | 60
+      durationMin: number   15 | 25 | 45 | 60, bawaan 25, boleh diubah host sebelum battle
       createdAt: number     ServerValue.TIMESTAMP
       expiresAt: number     maksimal createdAt + 30 menit
     guestUid: string        ditulis sekali oleh tamu
+    startRequested: boolean host menekan "Mulai Adu Fokus"; false bila ada yang menekan Batal
     ready/
-      {uid}: boolean
+      {uid}: boolean        "Aku siap" di Konfirmasi Kefokusan
     notes/
-      {uid}: string         maksimal 280 karakter
+      {uid}: string         1 sampai 140 karakter, wajib
     battle/                 ditulis sekali oleh host
       startedAt: number     ServerValue.TIMESTAMP
       checkIns/
@@ -56,12 +63,14 @@ rooms/
 | Path | Penulis | Kapan | Batasan rules |
 |---|---|---|---|
 | `users/{uid}/profile` | pemilik | saat Daftar | hanya pemilik |
-| `users/{uid}/history/{roomId}` | pemilik | setelah `result` ada | sekali, `delta` cocok dengan hasil |
+| `users/{uid}/history/{roomId}` | pemilik | setelah `result` ada | sekali, `delta` dan `outcome` cocok dengan hasil, `focusMin` cocok dengan waktu battle |
 | `rooms/{id}/meta` | host | saat Buat Room | sekali, durasi valid, `expiresAt` maksimal +30 menit |
+| `rooms/{id}/meta/durationMin` | host | di Lobi | 15/25/45/60, sebelum `battle` ada |
 | `rooms/{id}/guestUid` | tamu | saat membuka tautan | sekali, bukan host, room belum kedaluwarsa |
-| `rooms/{id}/ready/{uid}` | pemilik | di Lobi | hanya peserta, sebelum `battle` ada |
-| `rooms/{id}/notes/{uid}` | pemilik | di Lobi | hanya peserta, sebelum `battle` ada, maksimal 280 karakter |
-| `rooms/{id}/battle` | host | keduanya siap | sekali, `startedAt = now`, minimal satu Check-In |
+| `rooms/{id}/startRequested` | host (true), peserta mana pun (false) | Mulai / Batal | true hanya bila ada tamu dan Notes 2/2, sebelum `battle` ada |
+| `rooms/{id}/ready/{uid}` | pemilik | di Konfirmasi Kefokusan | hanya peserta, hanya saat `startRequested = true`, sebelum `battle` ada |
+| `rooms/{id}/notes/{uid}` | pemilik | di Lobi | hanya peserta, sebelum `battle` ada, 1 sampai 140 karakter |
+| `rooms/{id}/battle` | host | kedua `ready` true | sekali, `startedAt = now`, minimal satu Check-In |
 | `rooms/{id}/responses/{uid}/{i}` | pemilik | saat Check-In | sekali, nilainya `now`, di dalam jendela 20 detik, sebelum `result` ada |
 | `rooms/{id}/presence/{uid}` | pemilik | terus-menerus + `onDisconnect` | `lastSeen = now` |
 | `rooms/{id}/result` | salah satu peserta | saat kondisi akhir terpenuhi | sekali, bukti harus cocok (lihat `keputusan-aturan.md` bagian 4) |
@@ -78,11 +87,15 @@ Hak baca:
 | Status room | `menunggu`: belum ada `guestUid`. `siap`: ada tamu, belum ada `battle`. `berjalan`: ada `battle`, belum ada `result`. `selesai`: ada `result`. `kedaluwarsa`: `now > expiresAt` dan belum ada `battle`. |
 | Total poin | jumlah `delta` di `users/{uid}/history` |
 | Gelar | ambang tertinggi yang terlewati (tabel di `keputusan-aturan.md` bagian 9) |
-| Menang / seri / kalah | dari `delta`: 30 menang, 15 seri, 5 kalah |
+| Menang / seri / kalah | jumlah `outcome` di `history` |
+| Total waktu fokus | jumlah `focusMin` di `history` |
+| "Terakhir: menang lawan X" | entri `history` dengan `at` terbesar |
+| Penanda room `#XXXX` | 4 karakter terakhir `roomId`, huruf kapital. Hanya tampilan |
+| Notes 1/2, 2/2 | jumlah `notes/{uid}` yang terisi |
 | Sisa waktu Arena | `startedAt + durationMin * 60000 - serverNow` |
 | Check-In aktif | indeks `i` dengan `T <= serverNow <= T + 20 detik` |
 
-**[TERBUKA]** Dasbor di Figma menampilkan angka statistik seperti rekor dan total menit fokus. Data ini **tidak bisa dihitung** dari `history` yang sekarang hanya berisi `delta`. Usulan: tambah `outcome` dan `focusMin` ke `history/{roomId}`, lalu rules memeriksa keduanya terhadap `result` dan `meta.durationMin`. Kalau tidak disetujui, angka itu dihapus dari Dasbor.
+`opponentName` tidak bisa diverifikasi rules. Ini aman karena hanya memengaruhi tampilan Dasbor milik pemiliknya sendiri.
 
 ## 4. Kontrak services (dipakai mock dan Firebase)
 
@@ -99,11 +112,15 @@ onAuthChange(callback)                 // -> unsubscribe
 getProfile(uid)                        // -> { name, createdAt, points, tier, wins, draws, losses }
 
 // room
-createRoom({ durationMin })            // -> roomId
-joinRoom(roomId)                       // -> 'joined' | 'full' | 'expired' | 'not_found' | 'own_room'
+createRoom({ durationMin = 25 })       // -> roomId
+openRoom(roomId)                       // -> 'host_lobby' | 'guest_lobby' | 'arena' | 'result' | 'full' | 'invalid'
+                                       //    (tabel di keputusan-aturan.md bagian 7; tamu baru ikut dicatat)
+setDuration(roomId, durationMin)       // host saja, sebelum battle
 setNotes(roomId, text)
-setReady(roomId, isReady)
-startBattle(roomId)                    // host saja, membuat jadwal Check-In
+requestStart(roomId)                   // host: "Mulai Adu Fokus"
+cancelStart(roomId)                    // siapa pun: "Batal" di Konfirmasi
+confirmReady(roomId)                   // "Aku siap"
+startBattle(roomId)                    // host saja, dipanggil otomatis saat kedua ready true
 answerCheckIn(roomId, index)
 forfeit(roomId)                        // keluar sengaja = kalah
 claimResult(roomId, result)            // dipanggil saat referee.js menyatakan battle selesai
@@ -133,7 +150,19 @@ Mock juga menyediakan panel dev untuk mensimulasikan lawan: bergabung, siap, ter
 
 **Kode undangan:** ERD memakai `kode_undangan CHAR(6)`. Usulan di sini adalah memakai `roomId` dari push key Firebase (20 karakter) langsung di tautan, tanpa kode 6 karakter. Alasannya, kode 6 karakter bisa ditebak, sehingga orang asing bisa masuk ke room orang lain. Push key praktis tidak bisa ditebak. Konsekuensinya, room hanya bisa dimasuki lewat tautan, tidak dengan mengetik kode. **[TERBUKA]** Kalau tim tetap ingin kode yang bisa diketik, perlu node tambahan `inviteCodes/{kode}: roomId` dan rules-nya.
 
-## 6. Berkas terkait
+## 6. Perubahan rules yang dibutuhkan v1.1
+
+`database.rules.json` versi 23 Nov masih mengikuti v1. Yang perlu ditambahkan Naufal:
+
+1. `meta/durationMin` boleh ditulis ulang oleh host selama `battle` belum ada.
+2. Node `startRequested`: host boleh menulis true (bila `guestUid` ada dan kedua Notes terisi), peserta mana pun boleh menulis false, sebelum `battle` ada.
+3. `ready/{uid}` hanya boleh true saat `startRequested = true`. Saat Batal, `ready` boleh dihapus pemiliknya.
+4. `notes/{uid}`: panjang 1 sampai 140 (sekarang maksimal 280 dan boleh kosong).
+5. `battle` hanya boleh ditulis bila kedua `notes` terisi dan kedua `ready` true.
+6. `history/{roomId}`: validasi `outcome` dan `focusMin` terhadap `result` dan `battle/startedAt`, `opponentName` string 1 sampai 60, `at = now`.
+7. Tes Emulator untuk skenario 15 dan 16 di `keputusan-aturan.md`.
+
+## 7. Berkas terkait
 
 - `database.rules.json`: rules yang memeriksa semua batasan di bagian 2.
 - `tests/rules.test.js`: tes Emulator. Cara menjalankan: `npm i -D firebase-tools @firebase/rules-unit-testing firebase vitest`, lalu `npx firebase emulators:exec --only database "npx vitest run"` (butuh Java).

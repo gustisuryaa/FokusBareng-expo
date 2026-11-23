@@ -75,7 +75,7 @@ Tambahkan halaman /dev/komponen yang memajang semua varian.
 1. src/domain/referee.js: fungsi murni yang menerima isi room + waktu server dan mengembalikan
    status battle (berjalan, atau hasil dengan outcome dan reason). Aturannya dari
    docs/keputusan-aturan.md bagian 4. Angka dari gameRules.js.
-2. tests/referee.test.js: 14 skenario di keputusan-aturan.md bagian 6 yang bisa diuji tanpa
+2. tests/referee.test.js: 16 skenario di keputusan-aturan.md bagian 6 yang bisa diuji tanpa
    Firebase. Tulis tesnya dulu, tunjukkan gagal, baru isi referee.js sampai lulus.
 3. src/services/: kontrak persis seperti docs/struktur-data.md bagian 4.
    - services/mock/: data di memori + localStorage, bentuk data sama persis dengan bagian 1.
