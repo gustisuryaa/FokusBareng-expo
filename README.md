@@ -4,7 +4,7 @@ Web app **Adu Fokus 1v1 real-time** untuk mahasiswa Informatika UII. Dua pemain 
  
 Proyek kelompok **E-Duel**, untuk mata kuliah Pengembangan Aplikasi Berbasis Web (SIF302) dan proyek expo Manajemen Pengembangan Teknologi Informasi (MPTI), Informatika FTI UII, semester gasal 2026/2027.
  
-> **Status (23 November 2026):** tahap perancangan selesai (aturan main, struktur data, ERD, desain Figma). Kode front-end mulai dikerjakan. Bagian "Menjalankan proyek" di bawah berlaku setelah kode masuk ke repo.
+> **Status (24 November 2026):** front-end lima fitur wajib selesai dan berjalan dengan data mock. Services Firebase sudah diimplementasikan dan lolos tes di Emulator dengan rules terbuka. Berikutnya: `database.rules.json`, Notes rahasia, dan ketentuan poin (lihat [`docs/usulan-firebase-v1.3.md`](docs/usulan-firebase-v1.3.md)).
  
 ## Fitur
  
@@ -23,7 +23,7 @@ Di luar proyek: aplikasi native, obrolan, leaderboard, pencarian lawan acak.
  
 1. Host membuat room dan memilih durasi (15, 25, 45, atau 60 menit).
 2. Host membagikan tautan `/room/{roomId}` ke lawan. Satu room maksimal 2 orang.
-3. Kedua pemain menulis Notes (konsekuensi untuk yang kalah, maksimal 280 karakter), lalu menekan Siap.
+3. Kedua pemain menulis Notes (konsekuensi untuk yang kalah, 1 sampai 140 karakter), lalu menekan Siap.
 4. Battle berjalan. Check-In muncul bersamaan di kedua perangkat dan harus dijawab dalam batas waktu.
 5. Battle selesai saat ada yang kalah atau timer habis (seri). Poin dan gelar diperbarui.
 Aturan lengkap, termasuk rumus kalah dan toleransi putus sinyal, ada di [`docs/keputusan-aturan.md`](docs/keputusan-aturan.md). Angka seperti batas Check-In, poin, dan ambang gelar masih berstatus **usulan** dan disimpan di satu file config.
@@ -69,10 +69,13 @@ Dengan `VITE_DATA_SOURCE=mock`, aplikasi berjalan tanpa Firebase. Mock menyediak
 Perintah lain:
  
 ```bash
-npm run build                                                  # build produksi
-npx vitest run                                                 # tes logika wasit
-npx firebase emulators:exec --only database "npx vitest run"   # tes Security Rules
+npm run build           # build produksi
+npm test                # tes wasit, mock, dan config
+npm run test:emulator   # tes services Firebase di Emulator (butuh Java)
+npm run dev:emulator    # aplikasi penuh di atas Firebase Emulator (butuh Java)
 ```
+
+`npm run dev:emulator` memakai `.env.emulator` (project demo, tanpa akun Firebase). Setiap tab browser menjadi pengguna terpisah, jadi alur 1v1 bisa dicoba di dua tab: daftar dua akun, buat room di tab pertama, buka tautannya di tab kedua. Data Emulator hilang setiap kali perintah dihentikan. Rules yang dipakai masih terbuka, jadi mode ini belum menguji keamanan.
  
 Mode demo untuk expo (battle 3 menit, Check-In lebih rapat, tanpa poin) direncanakan lewat `?mode=demo` dan masih menunggu keputusan tim.
  

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:emulator": "firebase emulators:exec --config firebase.emulator.json --project demo-fokusbareng --only auth,database \"vite --mode emulator\"",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
