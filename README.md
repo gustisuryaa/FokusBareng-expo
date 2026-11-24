@@ -75,7 +75,7 @@ npm run test:emulator   # tes services Firebase di Emulator (butuh Java)
 npm run dev:emulator    # aplikasi penuh di atas Firebase Emulator (butuh Java)
 ```
 
-`npm run dev:emulator` memakai `.env.emulator` (project demo, tanpa akun Firebase). Setiap tab browser menjadi pengguna terpisah, jadi alur 1v1 bisa dicoba di dua tab: daftar dua akun, buat room di tab pertama, buka tautannya di tab kedua. Data Emulator hilang setiap kali perintah dihentikan. Rules yang dipakai masih terbuka, jadi mode ini belum menguji keamanan.
+`npm run dev:emulator` memakai `.env.emulator` (project demo, tanpa akun Firebase). Setiap tab browser menjadi pengguna terpisah, jadi alur 1v1 bisa dicoba di dua tab: daftar dua akun, buat room di tab pertama, buka tautannya di tab kedua. Akun dan room disimpan di `.firebase/emulator-data` saat perintah dihentikan dengan Ctrl+C, lalu dimuat lagi di run berikutnya. Hapus folder itu untuk mulai dari kosong. Akun yang didaftarkan di mode mock (`npm run dev`) tidak ada di Emulator. Rules yang dipakai masih terbuka, jadi mode ini belum menguji keamanan.
  
 Mode demo untuk expo (battle 3 menit, Check-In lebih rapat, tanpa poin) direncanakan lewat `?mode=demo` dan masih menunggu keputusan tim.
  
