@@ -23,6 +23,27 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/mandiri',
+    name: 'solo',
+    component: () => import('@/views/SoloView.vue'),
+    props: { step: 'overview' },
+    meta: { requiresAuth: true },
+  },
+  {
+    // Ponsel: M11 terpisah dari M10. Desktop: keduanya satu layar (D07).
+    path: '/mandiri/teknik',
+    name: 'solo-technique',
+    component: () => import('@/views/SoloView.vue'),
+    props: { step: 'technique' },
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/mandiri/sesi',
+    name: 'solo-session',
+    component: () => import('@/views/SoloSessionView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/room/:id',
     name: 'lobby',
     component: () => import('@/views/LobbyView.vue'),

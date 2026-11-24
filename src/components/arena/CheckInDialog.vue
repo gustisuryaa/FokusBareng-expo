@@ -12,6 +12,8 @@ defineProps({
   // Nomor Check-In untuk ditampilkan (mulai dari 1)
   number: { type: Number, default: 1 },
   busy: { type: Boolean, default: false },
+  // Belajar Mandiri tidak punya layar Hasil
+  missedLabel: { type: String, default: 'Lihat hasil' },
 })
 defineEmits(['answer', 'see-result'])
 </script>
@@ -52,7 +54,7 @@ defineEmits(['answer', 'see-result'])
         Masih fokus
       </AppButton>
       <AppButton v-else size="lg" block class="checkin__action" data-autofocus @click="$emit('see-result')">
-        Lihat hasil
+        {{ missedLabel }}
       </AppButton>
       <p class="body-14-regular checkin__muted only-desktop">Tekan Enter atau klik tombol</p>
     </div>

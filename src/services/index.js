@@ -28,6 +28,8 @@ export const {
   applyPoints,
   listenRoom,
   getServerOffset,
+  saveSoloSession,
+  listSoloSessions,
 } = services
 
 export { ServiceError, ERROR_CODES } from './errors.js'

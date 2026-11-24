@@ -341,6 +341,22 @@ export const applyPoints = guarded(async (roomId) => {
   return entry
 })
 
+// ---------- Belajar Mandiri ----------
+
+// [USULAN] users/{uid}/solo/{sessionId}, lihat docs/usulan-firebase-v1.3.md bagian 4
+export const saveSoloSession = guarded(async (entry) => {
+  const uid = requireUid()
+  const sessionRef = push(ref(db(), `users/${uid}/solo`))
+  await set(sessionRef, { ...entry })
+  return sessionRef.key
+})
+
+export const listSoloSessions = guarded(async () => {
+  const uid = requireUid()
+  const snapshot = await get(ref(db(), `users/${uid}/solo`))
+  return snapshot.val() ?? {}
+})
+
 // Room hilang atau akses ditolak sama-sama dikabarkan sebagai null, seperti mock
 export function listenRoom(roomId, callback) {
   return onValue(

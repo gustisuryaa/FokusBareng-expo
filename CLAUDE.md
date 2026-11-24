@@ -48,7 +48,7 @@ Penanda status di dokumen: **[USULAN]** boleh dipakai tapi nilainya disimpan di 
 8. Teks UI diambil persis dari Figma. Bahasa Indonesia, menyapa "kamu", tanpa emoji di judul, tanpa em dash.
 9. Identifier kode berbahasa Inggris. Komentar singkat berbahasa Indonesia, hanya untuk bagian yang tidak jelas dengan sendirinya.
 10. Ikuti daftar anti vibe-coded di `docs/design_terbaru.md` bagian 7.
-11. Lingkup kode hanya lima fitur wajib: Auth, Dasbor Profil dan Gelar, Lobi Room via tautan undangan, Arena Timer dengan wasit otomatis, Layar Hasil. Belajar Mandiri, Pemilihan Teknik, Pencarian Teman, dan Add Friend **hanya didesain, tidak dikodekan**. Tidak ada aplikasi native, obrolan, leaderboard, atau pencarian lawan acak. Jangan menambah fitur.
+11. Lingkup kode: lima fitur wajib (Auth, Dasbor Profil dan Gelar, Lobi Room via tautan undangan, Arena Timer dengan wasit otomatis, Layar Hasil) ditambah Belajar Mandiri dan Pemilihan Teknik (diputuskan kelompok 24 Nov 2026, Catatan Perubahan resmi menyusul). Pencarian Teman dan Add Friend **hanya didesain, tidak dikodekan**. Tidak ada aplikasi native, obrolan, leaderboard, atau pencarian lawan acak. Jangan menambah fitur.
 12. Kalau sebuah file `docs/` bertentangan dengan dokumen resmi, ikuti dokumen resmi dan laporkan pertentangannya.
 13. Aksesibilitas: tap target minimal 44 px di mobile, fokus keyboard selalu terlihat, kontras minimal WCAG AA, teks minimal 12 px.
 

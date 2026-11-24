@@ -132,6 +132,10 @@ claimResult(roomId, result)            // dipanggil saat referee.js menyatakan b
 applyPoints(roomId)                    // menulis history milik sendiri
 listenRoom(roomId, callback)           // -> unsubscribe, callback menerima seluruh isi room
 getServerOffset()                      // -> ms, selisih jam server dan perangkat
+
+// Belajar Mandiri [USULAN], lihat docs/usulan-firebase-v1.3.md bagian 4
+saveSoloSession(entry)                 // users/{uid}/solo/{id} = { technique, focusMin, startedAt, endedAt, completed } -> id
+listSoloSessions()                     // -> { [id]: entry } milik pengguna yang masuk
 ```
 
 Galat memakai `ServiceError` dengan `code` yang sama untuk mock dan Firebase (`src/services/errors.js`).

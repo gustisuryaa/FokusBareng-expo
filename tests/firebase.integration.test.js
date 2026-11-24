@@ -142,6 +142,13 @@ describe.skipIf(!hasEmulator)('services Firebase (emulator)', () => {
     expect(await services.openRoom(roomId)).toBe('result')
   })
 
+  it('sesi Belajar Mandiri tersimpan di akun sendiri', async () => {
+    const endedAt = Date.now()
+    const entry = { technique: 'pomodoro', focusMin: 25, startedAt: endedAt - 30 * 60_000, endedAt, completed: true }
+    const id = await services.saveSoloSession(entry)
+    expect(await services.listSoloSessions()).toMatchObject({ [id]: entry })
+  })
+
   it('selisih jam server berupa angka', async () => {
     expect(typeof (await services.getServerOffset())).toBe('number')
   })

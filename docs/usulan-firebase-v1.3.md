@@ -33,15 +33,20 @@ Services Firebase saat ini **mengabaikan** `?mode=demo` dan membuat room normal 
 - Rules mengizinkan `meta.mode = "demo"` dengan batas Check-In dan poin sendiri.
 - Demo expo memakai mock di satu perangkat dengan panel lawan tiruan.
 
-## 4. Belajar Mandiri (masuk lingkup, sesi dicatat)
+## 4. Belajar Mandiri (dikodekan 24 November 2026, sesuai Figma tanpa poin)
 
-Belum bisa dikodekan karena aturannya belum ada di dokumen resmi maupun `keputusan-aturan.md`. Yang perlu ditetapkan:
+Sudah dikodekan dengan nilai **[USULAN]** di `SOLO_RULES` (`src/config/gameRules.js`) dan logika di `src/domain/solo.js`:
 
-1. Daftar teknik di layar Pemilihan Teknik beserta durasi fokus dan istirahatnya (misalnya Pomodoro 25/5).
-2. Sesi dihitung tercatat kapan: setelah satu putaran fokus selesai, atau juga bila dihentikan di tengah?
-3. Apakah sesi mandiri memberi poin dan memengaruhi gelar, atau hanya menambah total waktu fokus?
-4. Bentuk data, usulan awal: `users/{uid}/solo/{sessionId}: { technique, focusMin, startedAt, endedAt }`. Rules: hanya pemilik, `focusMin` tidak boleh melebihi `(endedAt - startedAt) / 60000`.
-5. Catatan Perubahan di `docs/resmi/` yang memasukkan fitur ini ke lingkup, karena Charter dan CLAUDE.md aturan 11 masih menyebutnya "hanya didesain".
+- Teknik dari Figma M11: Pomodoro 25/5 x 4, Fokus panjang 50/10 x 2, Satu blok 15/25/45/60 tanpa istirahat.
+- Sesi berjalan disimpan per tab (`sessionStorage`), baru ditulis ke database saat berakhir.
+- Tercatat saat: semua putaran selesai (`completed: true`), Akhiri sesi atau meninggalkan halaman (`completed: false`), atau Check-In terlewat (`completed: false`, menit dihitung sampai Check-In dibuka). Sesi di bawah 1 menit tidak dicatat.
+- Data: `users/{uid}/solo/{sessionId}: { technique, focusMin, startedAt, endedAt, completed }`.
+
+Yang masih perlu diputuskan:
+
+1. **Poin.** Figma menulis "TANPA POIN" dan "Tidak ada poin dan gelar", Naufal mengusulkan 1 jam = 1 poin dan duel dua kali lipat. Kalau berpoin: ubah `SOLO_RULES.awardsPoints`, teks chip dan subjudul M10/D07, serta cara `getProfile` menjumlahkan poin.
+2. **Rules** untuk `users/{uid}/solo`: hanya pemilik; `technique` salah satu dari tiga; `focusMin` bilangan bulat dan tidak melebihi `(endedAt - startedAt) / 60000`; `endedAt <= now`. Mock sudah memeriksa hal yang sama.
+3. Catatan Perubahan resmi di `docs/resmi/` (Charter dan WBS 2.2.2 masih menyebut "hanya didesain").
 
 ## 5. Cara menguji services
 

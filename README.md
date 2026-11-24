@@ -15,7 +15,9 @@ Dikodekan (lingkup MVP):
 - **Lobi Room via tautan undangan**: host membuat room, membagikan tautan, kedua pemain mengisi Notes lalu menekan Siap.
 - **Arena Timer dengan wasit otomatis**: timer tersinkron antar perangkat, Random Check-In, deteksi putus sinyal dan tab tidak aktif.
 - **Layar Hasil**: menang, kalah (dengan popup Notes pemenang), atau seri.
-Hanya didesain, tidak dikodekan: Belajar Mandiri, Pemilihan Teknik Belajar, Pencarian Teman, Add Friend.
+- **Belajar Mandiri**: fokus sendiri dengan teknik Pomodoro, Fokus panjang, atau Satu blok, Check-In acak opsional, sesi dicatat ke riwayat. Masuk lingkup 24 November 2026; ketentuan poinnya masih dibahas.
+
+Hanya didesain, tidak dikodekan: Pencarian Teman, Add Friend.
  
 Di luar proyek: aplikasi native, obrolan, leaderboard, pencarian lawan acak.
  

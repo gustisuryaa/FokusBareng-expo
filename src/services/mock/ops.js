@@ -2,7 +2,7 @@
 // dev.js memakainya untuk lawan tiruan. Setiap operasi memeriksa hal yang sama dengan
 // database.rules.json (struktur-data.md bagian 2), memakai fungsi wasit yang sama.
 
-import { DEMO_RULES, MODES, NORMAL_RULES, getRules } from '../../config/gameRules.js'
+import { DEMO_RULES, MODES, NORMAL_RULES, SOLO_RULES, getRules } from '../../config/gameRules.js'
 import {
   buildHistoryEntry,
   canAnswerCheckIn,
@@ -61,6 +61,31 @@ export function getProfile(uid) {
   const user = state.db.users[uid]
   if (!user) fail(ERROR_CODES.NOT_FOUND, 'Profil tidak ditemukan.')
   return { ...clone(user.profile), ...summarizeHistory(user.history) }
+}
+
+// ---------- Belajar Mandiri ----------
+
+// Cermin rules [USULAN]: hanya pemilik, focusMin tidak melebihi waktu yang benar-benar lewat
+export function saveSoloSession(uid, entry) {
+  const elapsedMin = Math.floor((entry?.endedAt - entry?.startedAt) / 60_000)
+  const valid =
+    SOLO_RULES.techniques.some((technique) => technique.id === entry?.technique) &&
+    Number.isInteger(entry.focusMin) &&
+    entry.focusMin >= 0 &&
+    entry.focusMin <= elapsedMin &&
+    entry.endedAt <= now() &&
+    typeof entry.completed === 'boolean'
+  if (!valid) fail(ERROR_CODES.INVALID_ARGUMENT, 'Data sesi tidak valid.')
+
+  const user = state.db.users[uid]
+  const id = randomId()
+  user.solo = { ...user.solo, [id]: { ...entry } }
+  commit()
+  return id
+}
+
+export function listSoloSessions(uid) {
+  return clone(state.db.users[uid]?.solo ?? {})
 }
 
 // ---------- Room ----------

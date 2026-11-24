@@ -85,6 +85,10 @@
   --control-row: 52px; /* baris daftar: radio, tangga gelar, kartu pemain */
   --control-md: 56px; /* tombol dan input standar */
   --control-lg: 64px; /* tombol aksi utama di dialog dan Arena */
+  --switch-width: 52px; /* Switch/Check-In acak */
+  --switch-height: 32px;
+  --rhythm-height: 6px; /* bar Ritme teknik dan Ritme sesi */
+  --rhythm-marker-height: 16px;
   --dialog-width: 480px;
   --form-width: 440px; /* kolom form Auth desktop */
   --side-panel-width: 720px; /* panel identitas Auth desktop */
@@ -95,6 +99,7 @@
   --dot-size: 6px; /* titik status di Rekor */
   --header-height-d: 88px;
   --panel-tier-width: 540px;
+  --panel-solo-width: 520px; /* panel ringkasan Belajar Mandiri desktop (D07) */
   --panel-versus-width: 660px; /* panel versus Lobi desktop */
   --avatar-versus-m: 64px;
   --avatar-versus-d: 128px;

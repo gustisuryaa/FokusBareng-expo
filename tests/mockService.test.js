@@ -5,6 +5,7 @@ import * as ops from '../src/services/mock/ops.js'
 import * as bot from '../src/services/mock/dev.js'
 import * as mock from '../src/services/mock/index.js'
 import { resetStore, setClock, state } from '../src/services/mock/store.js'
+import { ERROR_CODES } from '../src/services/errors.js'
 
 // Skenario keputusan-aturan.md bagian 6 yang butuh "database": 10, 13, 14, 15, 16,
 // ditambah alur penuh Lobi sampai Hasil memakai mock.
@@ -155,6 +156,17 @@ describe('mock services', () => {
     expect(state.db.rooms[roomId].battle.checkIns[0].offsetMs).toBeLessThan(60_000)
     ops.forfeit(GUEST, roomId)
     expect(ops.applyPoints(HOST, roomId)).toBeNull()
+  })
+})
+
+describe('Belajar Mandiri (mock)', () => {
+  it('menyimpan sesi milik sendiri dan menolak menit fokus yang mustahil', () => {
+    const entry = { technique: 'pomodoro', focusMin: 25, startedAt: time - 30 * 60_000, endedAt: time, completed: false }
+    const id = ops.saveSoloSession(HOST, entry)
+    expect(ops.listSoloSessions(HOST)).toEqual({ [id]: entry })
+    expect(ops.listSoloSessions(GUEST)).toEqual({})
+    expect(code(() => ops.saveSoloSession(HOST, { ...entry, focusMin: 40 }))).toBe(ERROR_CODES.INVALID_ARGUMENT)
+    expect(code(() => ops.saveSoloSession(HOST, { ...entry, technique: 'lain' }))).toBe(ERROR_CODES.INVALID_ARGUMENT)
   })
 })
 

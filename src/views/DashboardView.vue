@@ -1,7 +1,7 @@
 <script setup>
 // Figma: Dasbor M01·D01 (kosong), M01w/k/s·D01w/k/s (sesudah menang/kalah/seri, sisi tamu sama),
 // menu profil M01b·D01b, sheet Tangga gelar M01g.
-// Tombol Teman dan Belajar mandiri tidak dirender (keputusan-aturan.md bagian 7).
+// Tombol Teman tidak dirender (keputusan-aturan.md bagian 7). Belajar mandiri masuk lingkup 24 Nov 2026.
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ProfileMenu from '@/components/layout/ProfileMenu.vue'
@@ -128,6 +128,10 @@ onMounted(loadProfile)
               <AppIcon name="plus" />
               Buat room
             </AppButton>
+            <AppButton variant="secondary" :to="{ name: 'solo' }">
+              <AppIcon name="book" :size="20" />
+              Belajar mandiri
+            </AppButton>
           </div>
         </div>
 
@@ -169,6 +173,10 @@ onMounted(loadProfile)
       <div class="dashboard__mobile-actions only-mobile">
         <p class="body-14-regular dashboard__muted dashboard__last">{{ lastMatchText }}</p>
         <AppButton block :disabled="creating" @click="handleCreateRoom">Buat room</AppButton>
+        <AppButton block variant="secondary" :to="{ name: 'solo' }">
+          <AppIcon name="book" :size="20" />
+          Belajar mandiri
+        </AppButton>
       </div>
     </main>
 

@@ -48,6 +48,25 @@ export const DEMO_RULES = Object.freeze({
   points: Object.freeze({ win: 0, draw: 0, lose: 0 }),
 })
 
+// Belajar Mandiri (M10 sampai M13, D07, D08). [USULAN] semua angka di blok ini.
+// Desain Figma: tanpa poin dan gelar. Kalau kelompok memutuskan mandiri berpoin, ubah awardsPoints di sini.
+export const SOLO_RULES = Object.freeze({
+  awardsPoints: false,
+  techniques: Object.freeze([
+    Object.freeze({ id: 'pomodoro', name: 'Pomodoro', focusMin: 25, breakMin: 5, rounds: 4 }),
+    Object.freeze({ id: 'long', name: 'Fokus panjang', focusMin: 50, breakMin: 10, rounds: 2 }),
+    // Satu blok: durasi fokus dipilih dari blockOptionsMin
+    Object.freeze({ id: 'block', name: 'Satu blok', focusMin: null, breakMin: 0, rounds: 1 }),
+  ]),
+  defaultTechniqueId: 'pomodoro',
+  blockOptionsMin: [15, 25, 45, 60],
+  defaultBlockMin: 25,
+  checkInDefault: true,
+  // Jendela jawab dan jarak Check-In sama dengan Arena
+  checkIn: NORMAL_RULES.checkIn,
+  historyLimit: 5,
+})
+
 // Urut dari ambang terendah. Akun baru: 0 poin, gelar Teralihkan.
 export const TIERS = Object.freeze([
   Object.freeze({ id: 'teralihkan', name: 'Teralihkan', minPoints: 0 }),

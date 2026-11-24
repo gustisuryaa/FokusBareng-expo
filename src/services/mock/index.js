@@ -134,6 +134,16 @@ export function listenRoom(roomId, callback) {
   return addRoomListener(roomId, callback)
 }
 
+// ---------- Belajar Mandiri ----------
+
+export async function saveSoloSession(entry) {
+  return ops.saveSoloSession(requireUid(), entry)
+}
+
+export async function listSoloSessions() {
+  return ops.listSoloSessions(requireUid())
+}
+
 // Jam mock sama dengan jam perangkat
 export async function getServerOffset() {
   return 0
