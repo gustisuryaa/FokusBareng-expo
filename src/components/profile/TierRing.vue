@@ -57,12 +57,12 @@ const ARC = 'M41.5614 208.439C25.0588 191.936 13.8204 170.91 9.26734 148.021C4.7
 
 .tier-ring__center {
   position: absolute;
-  inset: 0;
+  /* Posisi blok angka dari Figma: 75 px dari atas ring 250 px (M01) */
+  top: calc(var(--ring-tier-m) * 0.3);
+  inset-inline: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding-bottom: 12%;
 }
 
 @media (min-width: 1024px) {
@@ -70,9 +70,9 @@ const ARC = 'M41.5614 208.439C25.0588 191.936 13.8204 170.91 9.26734 148.021C4.7
     width: var(--ring-tier-d);
   }
 
-  /* D01: angka lebih dekat ke pusat lingkaran dibanding M01 */
+  /* D01: 97,2 px dari atas ring 360 px */
   .tier-ring__center {
-    padding-bottom: 0;
+    top: calc(var(--ring-tier-d) * 0.27);
   }
 }
 </style>
