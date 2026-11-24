@@ -69,5 +69,10 @@ const ARC = 'M41.5614 208.439C25.0588 191.936 13.8204 170.91 9.26734 148.021C4.7
   .tier-ring {
     width: var(--ring-tier-d);
   }
+
+  /* D01: angka lebih dekat ke pusat lingkaran dibanding M01 */
+  .tier-ring__center {
+    padding-bottom: 0;
+  }
 }
 </style>
