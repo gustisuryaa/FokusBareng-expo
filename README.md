@@ -74,6 +74,7 @@ Perintah lain:
 npm run build           # build produksi
 npm test                # tes wasit, mock, dan config
 npm run test:emulator   # tes services Firebase di Emulator (butuh Java)
+npm run test:rules      # tes database.rules.json di Emulator (butuh Java)
 npm run dev:emulator    # aplikasi penuh di atas Firebase Emulator (butuh Java)
 ```
 

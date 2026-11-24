@@ -48,6 +48,17 @@ Yang masih perlu diputuskan:
 2. **Rules** untuk `users/{uid}/solo`: hanya pemilik; `technique` salah satu dari tiga; `focusMin` bilangan bulat dan tidak melebihi `(endedAt - startedAt) / 60000`; `endedAt <= now`. Mock sudah memeriksa hal yang sama.
 3. Catatan Perubahan resmi di `docs/resmi/` (Charter dan WBS 2.2.2 masih menyebut "hanya didesain").
 
-## 5. Cara menguji services
+## 5. Draf database.rules.json (24 November 2026)
+
+`database.rules.json` sudah ditulis dari struktur-data v1.2 dan diuji `tests/rules.test.js` (`npm run test:rules`). Mohon Naufal tinjau sebelum deploy. Catatan:
+
+- **Notes masih terbaca lawan** karena `.read` room berjenjang. Skenario 11 ditandai `todo` sampai bagian 1 di atas diputuskan.
+- Batal menghapus seluruh `ready` (bagian 2 di atas sudah diterapkan di rules).
+- `meta.mode` ditolak, jadi mode demo hanya di mock (bagian 3).
+- Wasit di rules: klaim `missed_checkin` menang hanya diterima bila pemenang sudah menjawab Check-In itu, dan vonis untuk pemain yang terputus di jendela Check-In ditunda sampai toleransinya habis. Urutan beberapa Check-In tidak bisa dicek rules (rules tidak bisa mengulang data).
+- Angka aturan ditulis ulang di rules; `tests/rulesConfig.test.js` gagal bila berbeda dengan `gameRules.js`.
+- `presence.lastSeen` dibatasi `<= now`, bukan `=== now`, supaya `onDisconnect` tetap lolos.
+
+## 6. Cara menguji services
 
 `npm run test:emulator` menjalankan `tests/firebase.integration.test.js` (alur daftar, room, Notes, siap, battle, keluar Arena, poin) di Emulator dengan rules terbuka `tests/emulator/open.rules.json`. Rules terbuka ini **hanya untuk Emulator**; `firebase.emulator.json` sengaja terpisah dari `firebase.json` supaya tidak pernah ter-deploy.

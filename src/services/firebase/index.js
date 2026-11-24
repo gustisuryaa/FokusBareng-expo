@@ -188,8 +188,8 @@ export const createRoom = guarded(async ({ durationMin = NORMAL_RULES.defaultDur
     hostUid: uid,
     durationMin,
     createdAt: serverTimestamp(),
-    // Perkiraan jam server; rules hanya membatasi maksimal createdAt + 30 menit
-    expiresAt: serverNow() + NORMAL_RULES.roomTtlMs,
+    // Perkiraan jam server bisa sedikit maju; dikurangi 5 detik supaya tidak melewati batas rules createdAt + 30 menit
+    expiresAt: serverNow() + NORMAL_RULES.roomTtlMs - 5_000,
   })
   return roomId
 })
