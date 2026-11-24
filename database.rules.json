@@ -6,6 +6,12 @@
           ".read": "auth != null",
           ".write": "auth != null && auth.uid === $uid",
           ".validate": "(newData.hasChildren(['name', 'createdAt'])) && (newData.child('name').isString()) && (newData.child('name').val().length >= 1) && (newData.child('name').val().length <= 60) && (((!data.exists()) && (newData.child('createdAt').val() === now)) || (newData.child('createdAt').val() === data.child('createdAt').val()))",
+          "name": {
+            ".validate": "newData.isString()"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
           "$other": {
             ".validate": "false"
           }
@@ -15,6 +21,21 @@
           "$roomId": {
             ".write": "(auth != null) && (auth.uid === $uid) && (!data.exists()) && (root.child('rooms/' + $roomId).child('result').exists()) && ((root.child('rooms/' + $roomId).child('meta/hostUid').val() === $uid) || (root.child('rooms/' + $roomId).child('guestUid').val() === $uid))",
             ".validate": "(newData.hasChildren(['delta', 'outcome', 'focusMin', 'opponentName', 'at'])) && (newData.child('at').val() === now) && (newData.child('opponentName').isString()) && (newData.child('opponentName').val().length >= 1) && (newData.child('opponentName').val().length <= 60) && (((root.child('rooms/' + $roomId).child('result/outcome').val() === 'draw') && (newData.child('outcome').val() === 'draw') && (newData.child('delta').val() === 15)) || ((root.child('rooms/' + $roomId).child('result/winnerUid').val() === $uid) && (newData.child('outcome').val() === 'win') && (newData.child('delta').val() === 30)) || ((root.child('rooms/' + $roomId).child('result/loserUid').val() === $uid) && (newData.child('outcome').val() === 'loss') && (newData.child('delta').val() === 5))) && (newData.child('focusMin').isNumber()) && (newData.child('focusMin').val() * 60000 <= (root.child('rooms/' + $roomId).child('result/at').val() < root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000 ? root.child('rooms/' + $roomId).child('result/at').val() : root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000) - root.child('rooms/' + $roomId).child('battle/startedAt').val()) && ((newData.child('focusMin').val() + 1) * 60000 > (root.child('rooms/' + $roomId).child('result/at').val() < root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000 ? root.child('rooms/' + $roomId).child('result/at').val() : root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000) - root.child('rooms/' + $roomId).child('battle/startedAt').val())",
+            "delta": {
+              ".validate": "newData.isNumber()"
+            },
+            "outcome": {
+              ".validate": "newData.isString()"
+            },
+            "focusMin": {
+              ".validate": "newData.isNumber()"
+            },
+            "opponentName": {
+              ".validate": "newData.isString()"
+            },
+            "at": {
+              ".validate": "newData.isNumber()"
+            },
             "$other": {
               ".validate": "false"
             }
@@ -25,6 +46,21 @@
           "$sessionId": {
             ".write": "auth != null && auth.uid === $uid && !data.exists()",
             ".validate": "(newData.hasChildren(['technique', 'focusMin', 'startedAt', 'endedAt', 'completed'])) && ((newData.child('technique').val() === 'pomodoro') || (newData.child('technique').val() === 'long') || (newData.child('technique').val() === 'block')) && (newData.child('focusMin').isNumber()) && (newData.child('focusMin').val() >= 0) && (newData.child('focusMin').val() % 1 === 0) && (newData.child('startedAt').isNumber()) && (newData.child('endedAt').isNumber()) && (newData.child('endedAt').val() <= now) && (newData.child('focusMin').val() * 60000 <= newData.child('endedAt').val() - newData.child('startedAt').val()) && (newData.child('completed').isBoolean())",
+            "technique": {
+              ".validate": "newData.isString()"
+            },
+            "focusMin": {
+              ".validate": "newData.isNumber()"
+            },
+            "startedAt": {
+              ".validate": "newData.isNumber()"
+            },
+            "endedAt": {
+              ".validate": "newData.isNumber()"
+            },
+            "completed": {
+              ".validate": "newData.isBoolean()"
+            },
             "$other": {
               ".validate": "false"
             }
@@ -112,6 +148,12 @@
           "$uid": {
             ".write": "(auth != null) && (auth.uid === $uid) && ((data.parent().parent().child('meta/hostUid').val() === auth.uid || data.parent().parent().child('guestUid').val() === auth.uid))",
             ".validate": "(newData.hasChildren(['online', 'lastSeen'])) && (newData.child('online').isBoolean()) && (newData.child('lastSeen').isNumber()) && (newData.child('lastSeen').val() <= now)",
+            "online": {
+              ".validate": "newData.isBoolean()"
+            },
+            "lastSeen": {
+              ".validate": "newData.isNumber()"
+            },
             "$other": {
               ".validate": "false"
             }
