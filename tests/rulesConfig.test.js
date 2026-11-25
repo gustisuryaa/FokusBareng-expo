@@ -2,7 +2,7 @@
 // Tes ini gagal bila salah satu diubah tanpa yang lain.
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { NORMAL_RULES, SOLO_RULES } from '../src/config/gameRules.js'
+import { DEMO_RULES, NORMAL_RULES, SOLO_RULES } from '../src/config/gameRules.js'
 
 const rules = readFileSync(new URL('../database.rules.json', import.meta.url), 'utf8')
 
@@ -18,6 +18,11 @@ describe('angka di database.rules.json sama dengan gameRules.js', () => {
     ['poin kalah', `=== ${NORMAL_RULES.points.lose}`],
   ])('%s', (_, fragment) => {
     expect(rules).toContain(fragment)
+  })
+
+  it('mode demo', () => {
+    expect(rules).toContain(`>= ${DEMO_RULES.checkIn.firstAtMs}`)
+    for (const minutes of DEMO_RULES.durationsMin) expect(rules).toContain(`newData.val() === ${minutes}`)
   })
 
   it('pilihan durasi', () => {

@@ -3,6 +3,7 @@
 
 import { ERROR_CODES, ServiceError } from '../errors.js'
 import { PASSWORD_MIN_LENGTH, isEmailValid } from '../../lib/validation.js'
+import { mergeReadableNotes } from '../../domain/referee.js'
 import * as ops from './ops.js'
 import { addAuthListener, addRoomListener, clone, commit, notifyAuth, randomId, setSession, state } from './store.js'
 
@@ -129,9 +130,15 @@ export async function applyPoints(roomId) {
   return ops.applyPoints(requireUid(), roomId)
 }
 
+// Seperti Firebase: room.notes hanya memuat Notes yang boleh dibaca pengguna yang masuk
+function viewRoom(roomId) {
+  return mergeReadableNotes(clone(state.db.rooms[roomId] ?? null), state.db.roomNotes?.[roomId], state.sessionUid)
+}
+
 export function listenRoom(roomId, callback) {
-  callback(clone(state.db.rooms[roomId] ?? null))
-  return addRoomListener(roomId, callback)
+  const send = () => callback(viewRoom(roomId))
+  send()
+  return addRoomListener(roomId, send)
 }
 
 // ---------- Belajar Mandiri ----------

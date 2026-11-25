@@ -72,8 +72,9 @@ export function validateNotes(text, rules = getRules()) {
   return length >= rules.notes.minLength && text.length <= rules.notes.maxLength
 }
 
+// Isi Notes rahasia (roomNotes), jadi yang dihitung adalah penanda notesSet di room
 export function countNotes(room) {
-  return getPlayers(room).filter((uid) => validateNotes(room.notes?.[uid] ?? '', getRoomRules(room))).length
+  return getPlayers(room).filter((uid) => room.notesSet?.[uid] === true).length
 }
 
 export function isLobbyEditable(room, now) {
@@ -275,6 +276,18 @@ export function canReadNotes(room, readerUid, ownerUid) {
   if (!isPlayer(room, readerUid) || !isPlayer(room, ownerUid)) return false
   if (readerUid === ownerUid) return true
   return room.result?.outcome === 'win' && room.result.winnerUid === ownerUid
+}
+
+// Room yang dikirim ke layar: room.notes hanya berisi Notes yang boleh dibaca readerUid
+// (milik sendiri, atau milik pemenang setelah hasil). notesByUid = roomNotes/{roomId}.
+export function mergeReadableNotes(room, notesByUid, readerUid) {
+  if (!room) return room
+  const { notes: _ignored, ...rest } = room
+  const notes = {}
+  for (const [ownerUid, text] of Object.entries(notesByUid ?? {})) {
+    if (typeof text === 'string' && canReadNotes(room, readerUid, ownerUid)) notes[ownerUid] = text
+  }
+  return Object.keys(notes).length > 0 ? { ...rest, notes } : rest
 }
 
 const DELTA_KEY = Object.freeze({ win: 'win', draw: 'draw', loss: 'lose' })

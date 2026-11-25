@@ -4,7 +4,7 @@ import { getActiveCheckIn, getCheckInWindows } from '../src/domain/referee.js'
 import * as ops from '../src/services/mock/ops.js'
 import * as bot from '../src/services/mock/dev.js'
 import * as mock from '../src/services/mock/index.js'
-import { resetStore, setClock, state } from '../src/services/mock/store.js'
+import { resetStore, setClock, setSession, state } from '../src/services/mock/store.js'
 import { ERROR_CODES } from '../src/services/errors.js'
 
 // Skenario keputusan-aturan.md bagian 6 yang butuh "database": 10, 13, 14, 15, 16,
@@ -67,11 +67,30 @@ describe('mock services', () => {
     const roomId = startedRoom()
     const room = state.db.rooms[roomId]
     expect(Object.keys(room).sort()).toEqual(
-      ['battle', 'guestUid', 'meta', 'notes', 'presence', 'ready', 'startRequested'].sort(),
+      ['battle', 'guestUid', 'meta', 'notesSet', 'presence', 'ready', 'startRequested'].sort(),
     )
+    expect(room.notesSet).toEqual({ [HOST]: true, [GUEST]: true })
+    expect(state.db.roomNotes[roomId]).toEqual({
+      [HOST]: 'Traktir es teh di kantin FTI.',
+      [GUEST]: 'Bersihkan meja lab setelah praktikum.',
+    })
     expect(Object.keys(room.meta).sort()).toEqual(['createdAt', 'durationMin', 'expiresAt', 'hostUid'])
     expect(room.battle.startedAt).toBe(time)
     expect(room.battle.checkIns[0].offsetMs).toBeGreaterThanOrEqual(NORMAL_RULES.checkIn.firstAtMs)
+  })
+
+  it('11. listenRoom hanya memberi Notes sendiri, lalu Notes pemenang untuk yang kalah', async () => {
+    const roomId = startedRoom()
+    const seen = (uid) => {
+      setSession(uid)
+      let value
+      mock.listenRoom(roomId, (room) => (value = room))()
+      return value.notes
+    }
+    expect(seen(GUEST)).toEqual({ [GUEST]: 'Bersihkan meja lab setelah praktikum.' })
+    ops.forfeit(GUEST, roomId)
+    expect(seen(GUEST)).toEqual({ [GUEST]: 'Bersihkan meja lab setelah praktikum.', [HOST]: 'Traktir es teh di kantin FTI.' })
+    expect(seen(HOST)).toEqual({ [HOST]: 'Traktir es teh di kantin FTI.' })
   })
 
   it('14. orang ketiga melihat room penuh', () => {

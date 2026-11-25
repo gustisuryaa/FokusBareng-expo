@@ -9,7 +9,7 @@ const hasBrowser = typeof window !== 'undefined' && typeof localStorage !== 'und
 
 function emptyDb() {
   // accounts hanya ada di mock: pengganti Firebase Auth (email -> uid, kata sandi)
-  return { accounts: {}, users: {}, rooms: {} }
+  return { accounts: {}, users: {}, rooms: {}, roomNotes: {} }
 }
 
 function readDb() {

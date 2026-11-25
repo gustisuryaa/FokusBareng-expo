@@ -19,7 +19,7 @@
         "history": {
           ".read": "auth != null && auth.uid === $uid",
           "$roomId": {
-            ".write": "(auth != null) && (auth.uid === $uid) && (!data.exists()) && (root.child('rooms/' + $roomId).child('result').exists()) && ((root.child('rooms/' + $roomId).child('meta/hostUid').val() === $uid) || (root.child('rooms/' + $roomId).child('guestUid').val() === $uid))",
+            ".write": "((auth != null) && (auth.uid === $uid) && (!data.exists()) && (root.child('rooms/' + $roomId).child('result').exists()) && ((root.child('rooms/' + $roomId).child('meta/hostUid').val() === $uid) || (root.child('rooms/' + $roomId).child('guestUid').val() === $uid))) && (root.child('rooms/' + $roomId).child('meta/mode').val() !== 'demo')",
             ".validate": "(newData.hasChildren(['delta', 'outcome', 'focusMin', 'opponentName', 'at'])) && (newData.child('at').val() === now) && (newData.child('opponentName').isString()) && (newData.child('opponentName').val().length >= 1) && (newData.child('opponentName').val().length <= 60) && (((root.child('rooms/' + $roomId).child('result/outcome').val() === 'draw') && (newData.child('outcome').val() === 'draw') && (newData.child('delta').val() === 15)) || ((root.child('rooms/' + $roomId).child('result/winnerUid').val() === $uid) && (newData.child('outcome').val() === 'win') && (newData.child('delta').val() === 30)) || ((root.child('rooms/' + $roomId).child('result/loserUid').val() === $uid) && (newData.child('outcome').val() === 'loss') && (newData.child('delta').val() === 5))) && (newData.child('focusMin').isNumber()) && (newData.child('focusMin').val() * 60000 <= (root.child('rooms/' + $roomId).child('result/at').val() < root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000 ? root.child('rooms/' + $roomId).child('result/at').val() : root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000) - root.child('rooms/' + $roomId).child('battle/startedAt').val()) && ((newData.child('focusMin').val() + 1) * 60000 > (root.child('rooms/' + $roomId).child('result/at').val() < root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000 ? root.child('rooms/' + $roomId).child('result/at').val() : root.child('rooms/' + $roomId).child('battle/startedAt').val() + root.child('rooms/' + $roomId).child('meta/durationMin').val() * 60000) - root.child('rooms/' + $roomId).child('battle/startedAt').val())",
             "delta": {
               ".validate": "newData.isNumber()"
@@ -83,13 +83,16 @@
           },
           "durationMin": {
             ".write": "((auth != null) && (data.exists()) && (data.parent().child('hostUid').val() === auth.uid) && (!data.parent().parent().child('battle').exists())) && (now <= data.parent().child('expiresAt').val())",
-            ".validate": "newData.val() === 15 || newData.val() === 25 || newData.val() === 45 || newData.val() === 60"
+            ".validate": "((newData.parent().child('mode').val() === 'demo') && (newData.val() === 3)) || ((newData.parent().child('mode').val() !== 'demo') && (newData.val() === 15 || newData.val() === 25 || newData.val() === 45 || newData.val() === 60))"
           },
           "createdAt": {
             ".validate": "!data.exists() || newData.val() === data.val()"
           },
           "expiresAt": {
             ".validate": "!data.exists() || newData.val() === data.val()"
+          },
+          "mode": {
+            ".validate": "newData.val() === 'demo' && (!data.exists() || newData.val() === data.val())"
           },
           "$other": {
             ".validate": "false"
@@ -101,7 +104,7 @@
         },
         "startRequested": {
           ".write": "(auth != null) && ((data.parent().child('meta/hostUid').val() === auth.uid || data.parent().child('guestUid').val() === auth.uid)) && (!data.parent().child('battle').exists())",
-          ".validate": "(newData.isBoolean()) && ((newData.val() === false) || ((now <= data.parent().child('meta/expiresAt').val()) && (data.parent().child('meta/hostUid').val() === auth.uid) && (data.parent().child('guestUid').exists()) && (data.parent().child('notes').child(data.parent().child('meta/hostUid').val()).exists()) && (data.parent().child('notes').child(data.parent().child('guestUid').val()).exists())))"
+          ".validate": "(newData.isBoolean()) && ((newData.val() === false) || ((now <= data.parent().child('meta/expiresAt').val()) && (data.parent().child('meta/hostUid').val() === auth.uid) && (data.parent().child('guestUid').exists()) && ((data.parent().child('notesSet').child(data.parent().child('meta/hostUid').val()).val() === true)) && ((data.parent().child('notesSet').child(data.parent().child('guestUid').val()).val() === true))))"
         },
         "ready": {
           ".write": "(auth != null) && ((data.parent().child('meta/hostUid').val() === auth.uid || data.parent().child('guestUid').val() === auth.uid)) && (!data.parent().child('battle').exists()) && (!newData.exists())",
@@ -110,14 +113,14 @@
             ".validate": "newData.val() === true"
           }
         },
-        "notes": {
+        "notesSet": {
           "$uid": {
-            ".write": "((auth != null) && (auth.uid === $uid) && ((data.parent().parent().child('meta/hostUid').val() === auth.uid || data.parent().parent().child('guestUid').val() === auth.uid)) && (!data.parent().parent().child('battle').exists())) && (now <= data.parent().parent().child('meta/expiresAt').val())",
-            ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 140"
+            ".write": "(((auth != null) && (auth.uid === $uid) && ((data.parent().parent().child('meta/hostUid').val() === auth.uid || data.parent().parent().child('guestUid').val() === auth.uid)) && (!data.parent().parent().child('battle').exists())) && (now <= data.parent().parent().child('meta/expiresAt').val())) && (newData.exists())",
+            ".validate": "(newData.val() === true) && (newData.parent().parent().parent().parent().child('roomNotes').child($roomId).child($uid).exists())"
           }
         },
         "battle": {
-          ".write": "((auth != null) && (!data.exists()) && (data.parent().child('meta/hostUid').val() === auth.uid) && (data.parent().child('startRequested').val() === true) && (data.parent().child('ready').child(data.parent().child('meta/hostUid').val()).val() === true) && (data.parent().child('ready').child(data.parent().child('guestUid').val()).val() === true) && (data.parent().child('notes').child(data.parent().child('meta/hostUid').val()).exists()) && (data.parent().child('notes').child(data.parent().child('guestUid').val()).exists())) && (now <= data.parent().child('meta/expiresAt').val())",
+          ".write": "((auth != null) && (!data.exists()) && (data.parent().child('meta/hostUid').val() === auth.uid) && (data.parent().child('startRequested').val() === true) && (data.parent().child('ready').child(data.parent().child('meta/hostUid').val()).val() === true) && (data.parent().child('ready').child(data.parent().child('guestUid').val()).val() === true) && ((data.parent().child('notesSet').child(data.parent().child('meta/hostUid').val()).val() === true)) && ((data.parent().child('notesSet').child(data.parent().child('guestUid').val()).val() === true))) && (now <= data.parent().child('meta/expiresAt').val())",
           ".validate": "newData.hasChildren(['startedAt', 'checkIns'])",
           "startedAt": {
             ".validate": "newData.val() === now"
@@ -125,7 +128,7 @@
           "checkIns": {
             "$i": {
               "offsetMs": {
-                ".validate": "newData.isNumber() && newData.val() >= 240000 && newData.val() < newData.parent().parent().parent().parent().child('meta/durationMin').val() * 60000"
+                ".validate": "newData.isNumber() && (((newData.parent().parent().parent().parent().child('meta/mode').val() === 'demo') && (newData.val() >= 30000)) || ((newData.parent().parent().parent().parent().child('meta/mode').val() !== 'demo') && (newData.val() >= 240000))) && newData.val() < newData.parent().parent().parent().parent().child('meta/durationMin').val() * 60000"
               },
               "$other": {
                 ".validate": "false"
@@ -186,6 +189,15 @@
         },
         "$other": {
           ".validate": "false"
+        }
+      }
+    },
+    "roomNotes": {
+      "$roomId": {
+        "$uid": {
+          ".read": "(auth != null) && ((auth.uid === $uid) || ((root.child('rooms/' + $roomId).child('meta/hostUid').val() === auth.uid || root.child('rooms/' + $roomId).child('guestUid').val() === auth.uid) && (root.child('rooms/' + $roomId).child('result/outcome').val() === 'win') && (root.child('rooms/' + $roomId).child('result/winnerUid').val() === $uid)))",
+          ".write": "(auth != null) && (auth.uid === $uid) && (newData.exists()) && (root.child('rooms/' + $roomId).child('meta/hostUid').val() === auth.uid || root.child('rooms/' + $roomId).child('guestUid').val() === auth.uid) && (!root.child('rooms/' + $roomId).child('battle').exists()) && (now <= root.child('rooms/' + $roomId).child('meta/expiresAt').val())",
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 140"
         }
       }
     }

@@ -128,6 +128,9 @@ describe.skipIf(!hasEmulator)('services Firebase (emulator)', () => {
     expect(typeof room.battle.startedAt).toBe('number')
     expect(Object.keys(room.battle.checkIns).length).toBeGreaterThan(0)
     expect(room.ready).toEqual({ [uidA]: true, [uidB]: true })
+    expect(room.notesSet).toEqual({ [uidA]: true, [uidB]: true })
+    // 11. pemain A hanya melihat Notes miliknya sendiri
+    expect(room.notes).toEqual({ [uidA]: 'Bayar parkir.' })
     expect(room.presence[uidB].online).toBe(true)
     expect(await services.openRoom(roomId)).toBe('arena')
   })
@@ -159,6 +162,18 @@ describe.skipIf(!hasEmulator)('services Firebase (emulator)', () => {
     const entry = { technique: 'pomodoro', focusMin: 25, startedAt: endedAt - 30 * 60_000, endedAt, completed: true }
     const id = await services.saveSoloSession(entry)
     expect(await services.listSoloSessions()).toMatchObject({ [id]: entry })
+  })
+
+  it('room demo dibuat dengan durasi demo dan meta.mode', async () => {
+    const demoId = await services.createRoom({ durationMin: 25, mode: 'demo' })
+    const room = await new Promise((resolve) => {
+      const stop = services.listenRoom(demoId, (value) => {
+        stop()
+        resolve(value)
+      })
+    })
+    expect(room.meta).toMatchObject({ durationMin: 3, mode: 'demo' })
+    await expect(services.setDuration(demoId, 25)).rejects.toMatchObject({ code: ERROR_CODES.INVALID_ARGUMENT })
   })
 
   it('profil sendiri yang hilang ditulis ulang dari nama akun', async () => {

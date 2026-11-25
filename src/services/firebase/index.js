@@ -10,10 +10,11 @@ import {
   updateProfile,
 } from 'firebase/auth'
 import { get, onDisconnect, onValue, push, ref, runTransaction, serverTimestamp, set, update } from 'firebase/database'
-import { NORMAL_RULES, getRules } from '../../config/gameRules.js'
+import { MODES, getRules } from '../../config/gameRules.js'
 import {
   buildHistoryEntry,
   canAnswerCheckIn,
+  canReadNotes,
   canRequestStart,
   canStartBattle,
   createForfeitResult,
@@ -24,6 +25,7 @@ import {
   isClaimValid,
   isLobbyEditable,
   isPlayer,
+  mergeReadableNotes,
   resolveRoomEntry,
   ROOM_STATUS,
   validateNotes,
@@ -188,19 +190,24 @@ export const getProfile = guarded(async (uid) => {
 
 // ---------- room ----------
 
-// [TERBUKA] Mode demo belum ada di rules Firebase, jadi room selalu dibuat dengan aturan normal
-export const createRoom = guarded(async ({ durationMin = NORMAL_RULES.defaultDurationMin } = {}) => {
+// Sama dengan mock: room demo selalu memakai durasi demo dan menyimpan meta.mode
+export const createRoom = guarded(async ({ durationMin, mode } = {}) => {
   const uid = requireUid()
-  if (!NORMAL_RULES.durationsMin.includes(durationMin)) fail(ERROR_CODES.INVALID_ARGUMENT, 'Durasi tidak tersedia.')
+  const isDemo = mode === MODES.DEMO
+  const rules = getRules(isDemo ? MODES.DEMO : MODES.NORMAL)
+  const duration = isDemo ? rules.defaultDurationMin : (durationMin ?? rules.defaultDurationMin)
+  if (!rules.durationsMin.includes(duration)) fail(ERROR_CODES.INVALID_ARGUMENT, 'Durasi tidak tersedia.')
 
   const roomId = push(ref(db(), 'rooms')).key
-  await set(roomRef(roomId, 'meta'), {
+  const meta = {
     hostUid: uid,
-    durationMin,
+    durationMin: duration,
     createdAt: serverTimestamp(),
     // Perkiraan jam server bisa sedikit maju; dikurangi 5 detik supaya tidak melewati batas rules createdAt + 30 menit
-    expiresAt: serverNow() + NORMAL_RULES.roomTtlMs - 5_000,
-  })
+    expiresAt: serverNow() + rules.roomTtlMs - 5_000,
+  }
+  if (isDemo) meta.mode = MODES.DEMO
+  await set(roomRef(roomId, 'meta'), meta)
   return roomId
 })
 
@@ -243,7 +250,11 @@ export const setNotes = guarded(async (roomId, text) => {
   requireLobby(room)
   const rules = getRoomRules(room)
   if (!validateNotes(text, rules)) fail(ERROR_CODES.INVALID_ARGUMENT, `Notes harus 1 sampai ${rules.notes.maxLength} karakter.`)
-  await set(roomRef(roomId, `notes/${uid}`), text)
+  // Isi rahasia dan penanda publik ditulis dalam satu update supaya tidak pernah berbeda
+  await update(ref(db()), {
+    [`roomNotes/${roomId}/${uid}`]: text,
+    [`rooms/${roomId}/notesSet/${uid}`]: true,
+  })
 })
 
 export const requestStart = guarded(async (roomId) => {
@@ -370,19 +381,50 @@ export const listSoloSessions = guarded(async () => {
 
 // Room hilang dikabarkan sebagai null, seperti mock. Bukan peserta ditolak rules membaca seluruh room,
 // jadi ia menerima meta dan guestUid saja (untuk nama di layar room penuh).
+// Notes tinggal di roomNotes: Notes sendiri didengarkan terus, Notes pemenang dibaca sekali setelah
+// hasil ada. Keduanya digabung ke room.notes supaya layar sama dengan mock.
 export function listenRoom(roomId, callback) {
+  const uid = firebase().auth.currentUser?.uid ?? null
   let active = true
-  const unsubscribe = onValue(
-    roomRef(roomId),
-    (snapshot) => callback(snapshot.val()),
-    async () => {
-      const partial = await loadRoomForEntry(roomId, null).catch(() => null)
-      if (active) callback(partial)
-    },
+  let room
+  let notes = {}
+  let winnerLoaded = null
+
+  const emit = () => {
+    if (active && room !== undefined) callback(mergeReadableNotes(room, notes, uid))
+  }
+  const keepNotes = (ownerUid, text) => {
+    notes = { ...notes, [ownerUid]: text ?? undefined }
+    emit()
+  }
+
+  const stops = []
+  if (uid) {
+    stops.push(onValue(ref(db(), `roomNotes/${roomId}/${uid}`), (snapshot) => keepNotes(uid, snapshot.val()), () => {}))
+  }
+  stops.push(
+    onValue(
+      roomRef(roomId),
+      (snapshot) => {
+        room = snapshot.val()
+        const winnerUid = room?.result?.winnerUid
+        if (winnerUid && winnerUid !== winnerLoaded && canReadNotes(room, uid, winnerUid) && winnerUid !== uid) {
+          winnerLoaded = winnerUid
+          get(ref(db(), `roomNotes/${roomId}/${winnerUid}`))
+            .then((value) => keepNotes(winnerUid, value.val()))
+            .catch(() => {})
+        }
+        emit()
+      },
+      async () => {
+        room = await loadRoomForEntry(roomId, null).catch(() => null)
+        emit()
+      },
+    ),
   )
   return () => {
     active = false
-    unsubscribe()
+    stops.forEach((stop) => stop())
   }
 }
 

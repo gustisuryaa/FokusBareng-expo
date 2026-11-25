@@ -46,13 +46,16 @@ const allowed = (promise) => expect(promise).resolves.not.toThrow()
 const denied = (promise) => expect(promise).rejects.toThrow(/permission/i)
 const write = (uid, path, value) => set(ref(as(uid), path), value)
 
+const NOTES = { [HOST]: 'Traktir es teh.', [GUEST]: 'Bayar parkir.' }
+
 // Room siap battle: tamu sudah masuk, Notes 2/2. Waktu dalam ms relatif ke sekarang.
+// Isi Notes ada di roomNotes (diisi beforeEach), room hanya memegang penanda notesSet.
 function lobby({ withNotes = true } = {}) {
   const now = Date.now()
   return {
     meta: { hostUid: HOST, durationMin: 25, createdAt: now, expiresAt: now + 30 * MIN },
     guestUid: GUEST,
-    ...(withNotes ? { notes: { [HOST]: 'Traktir es teh.', [GUEST]: 'Bayar parkir.' } } : {}),
+    ...(withNotes ? { notesSet: { [HOST]: true, [GUEST]: true } } : {}),
   }
 }
 
@@ -76,6 +79,7 @@ describe.skipIf(!HOST_ADDR)('database.rules.json (emulator)', () => {
 
   beforeEach(async () => {
     await admin('DELETE', '')
+    await admin('PUT', `roomNotes/${ROOM}`, NOTES)
   })
 
   afterAll(async () => {
@@ -97,13 +101,34 @@ describe.skipIf(!HOST_ADDR)('database.rules.json (emulator)', () => {
   })
 
   describe('room dan lobi', () => {
-    it('host membuat room; mode demo dan umur lebih dari 30 menit ditolak', async () => {
+    it('host membuat room; demo dengan durasi normal dan umur lebih dari 30 menit ditolak', async () => {
       const now = Date.now()
       const meta = { hostUid: HOST, durationMin: 25, createdAt: serverTimestamp(), expiresAt: now + 29 * MIN }
       await allowed(write(HOST, `rooms/${ROOM}/meta`, meta))
       await denied(write(HOST, 'rooms/r2/meta', { ...meta, mode: 'demo' }))
       await denied(write(HOST, 'rooms/r3/meta', { ...meta, expiresAt: now + 31 * MIN }))
       await denied(write(GUEST, 'rooms/r4/meta', meta))
+    })
+
+    it('mode demo: durasi 3 menit, Check-In mulai detik ke-30, tanpa poin', async () => {
+      const now = Date.now()
+      const meta = { hostUid: HOST, durationMin: 3, createdAt: serverTimestamp(), expiresAt: now + 29 * MIN, mode: 'demo' }
+      await allowed(write(HOST, `rooms/${ROOM}/meta`, meta))
+      await denied(write(HOST, 'rooms/r2/meta', { ...meta, mode: 'lain' }))
+      const { mode: _mode, ...normalMeta } = meta
+      await denied(write(HOST, 'rooms/r3/meta', normalMeta))
+      await denied(write(HOST, `rooms/${ROOM}/meta/durationMin`, 25))
+      await denied(write(HOST, `rooms/${ROOM}/meta/mode`, null))
+
+      const demo = { ...lobby(), meta: { ...lobby().meta, durationMin: 3, mode: 'demo' }, startRequested: true, ready: { [HOST]: true, [GUEST]: true } }
+      await admin('PUT', `rooms/${ROOM}`, demo)
+      const battle = (offsetMs) => ({ startedAt: serverTimestamp(), checkIns: { 0: { offsetMs } } })
+      await denied(write(HOST, `rooms/${ROOM}/battle`, battle(20_000)))
+      await denied(write(HOST, `rooms/${ROOM}/battle`, battle(3 * MIN)))
+      await allowed(write(HOST, `rooms/${ROOM}/battle`, battle(30_000)))
+
+      await admin('PUT', `rooms/${ROOM}/result`, { outcome: 'win', reason: 'forfeit', winnerUid: GUEST, loserUid: HOST, at: Date.now() })
+      await denied(write(GUEST, `users/${GUEST}/history/${ROOM}`, { delta: 30, outcome: 'win', focusMin: 0, opponentName: 'Gusti', at: serverTimestamp() }))
     })
 
     it('14. orang ketiga tidak bisa masuk room yang sudah berisi 2 orang', async () => {
@@ -132,7 +157,7 @@ describe.skipIf(!HOST_ADDR)('database.rules.json (emulator)', () => {
         ready: { [HOST]: true },
       })
       await denied(write(HOST, `rooms/${ROOM}/meta/durationMin`, 45))
-      await denied(write(GUEST, `rooms/${ROOM}/notes/${GUEST}`, 'Notes baru'))
+      await denied(write(GUEST, `roomNotes/${ROOM}/${GUEST}`, 'Notes baru'))
       await denied(write(HOST, `rooms/${ROOM}/startRequested`, true))
       await denied(write(GUEST, `rooms/${ROOM}/ready/${GUEST}`, true))
       await denied(write(HOST, `rooms/${ROOM}/battle`, battle))
@@ -144,14 +169,17 @@ describe.skipIf(!HOST_ADDR)('database.rules.json (emulator)', () => {
       await denied(write(GUEST, `rooms/${ROOM}/meta/durationMin`, 45))
       await denied(write(HOST, `rooms/${ROOM}/meta/durationMin`, 30))
       await allowed(write(HOST, `rooms/${ROOM}/meta/durationMin`, 45))
-      await denied(write(HOST, `rooms/${ROOM}/notes/${HOST}`, ''))
-      await denied(write(HOST, `rooms/${ROOM}/notes/${HOST}`, 'x'.repeat(141)))
-      await denied(write(HOST, `rooms/${ROOM}/notes/${GUEST}`, 'Notes orang lain'))
-      await allowed(write(HOST, `rooms/${ROOM}/notes/${HOST}`, 'x'.repeat(140)))
+      await denied(write(HOST, `roomNotes/${ROOM}/${HOST}`, ''))
+      await denied(write(HOST, `roomNotes/${ROOM}/${HOST}`, 'x'.repeat(141)))
+      await denied(write(HOST, `roomNotes/${ROOM}/${GUEST}`, 'Notes orang lain'))
+      await denied(write(HOST, `rooms/${ROOM}/notes/${HOST}`, 'Path lama'))
+      await allowed(write(HOST, `roomNotes/${ROOM}/${HOST}`, 'x'.repeat(140)))
+      await allowed(write(HOST, `rooms/${ROOM}/notesSet/${HOST}`, true))
 
       await admin('PUT', `rooms/${ROOM}`, running(MIN))
       await denied(write(HOST, `rooms/${ROOM}/meta/durationMin`, 60))
-      await denied(write(HOST, `rooms/${ROOM}/notes/${HOST}`, 'Ganti setelah mulai'))
+      await denied(write(HOST, `roomNotes/${ROOM}/${HOST}`, 'Ganti setelah mulai'))
+      await denied(write(HOST, `rooms/${ROOM}/notesSet/${HOST}`, null))
     })
 
     it('15. battle tidak bisa dimulai sebelum Notes 2/2 dan kedua siap', async () => {
@@ -178,7 +206,31 @@ describe.skipIf(!HOST_ADDR)('database.rules.json (emulator)', () => {
       await denied(write(HOST, `rooms/${ROOM}/battle`, battle))
     })
 
-    it.todo('11. lawan tidak bisa membaca Notes sebelum ada hasil (butuh keputusan struktur Notes, usulan v1.3 bagian 1)')
+    it('11. lawan tidak bisa membaca Notes sebelum ada hasil, dan tetap tidak bisa bila seri', async () => {
+      const read = (uid, owner) => get(ref(as(uid), `roomNotes/${ROOM}/${owner}`))
+      await admin('PUT', `rooms/${ROOM}`, lobby())
+      await allowed(read(HOST, HOST))
+      await denied(read(GUEST, HOST))
+      await denied(get(ref(as(GUEST), `roomNotes/${ROOM}`)))
+
+      await admin('PUT', `rooms/${ROOM}`, running(26 * MIN, { result: { outcome: 'draw', reason: 'timeup', at: Date.now() } }))
+      await denied(read(GUEST, HOST))
+      await denied(read(HOST, GUEST))
+
+      const win = { outcome: 'win', reason: 'forfeit', winnerUid: HOST, loserUid: GUEST, at: Date.now() }
+      await admin('PUT', `rooms/${ROOM}`, running(2 * MIN, { result: win }))
+      await allowed(read(GUEST, HOST))
+      await denied(read(HOST, GUEST))
+      await denied(read(STRANGER, HOST))
+    })
+
+    it('penanda Notes hanya boleh true bila isinya ada; keduanya ditulis sekaligus', async () => {
+      await admin('PUT', 'rooms/r2', lobby({ withNotes: false }))
+      await denied(write(GUEST, `rooms/r2/notesSet/${GUEST}`, true))
+      await denied(write(GUEST, `rooms/r2/notesSet/${HOST}`, true))
+      await allowed(update(ref(as(GUEST)), { [`roomNotes/r2/${GUEST}`]: 'Bayar parkir.', [`rooms/r2/notesSet/${GUEST}`]: true }))
+      await denied(write(GUEST, `rooms/r2/notesSet/${GUEST}`, false))
+    })
   })
 
   describe('Arena dan wasit', () => {

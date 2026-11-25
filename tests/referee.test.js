@@ -14,6 +14,7 @@ import {
   getRoomStatus,
   isClaimValid,
   isLobbyEditable,
+  mergeReadableNotes,
   resolveRoomEntry,
   validateNotes,
 } from '../src/domain/referee.js'
@@ -34,7 +35,7 @@ function lobbyRoom(overrides = {}) {
     guestUid: GUEST,
     startRequested: true,
     ready: { [HOST]: true, [GUEST]: true },
-    notes: { [HOST]: 'Traktir es teh di kantin FTI.', [GUEST]: 'Bersihkan meja lab setelah praktikum.' },
+    notesSet: { [HOST]: true, [GUEST]: true },
     ...overrides,
   }
 }
@@ -222,6 +223,17 @@ describe('Notes, poin, dan Lobi', () => {
     expect(canReadNotes(hostWon, 'orang-lain', HOST)).toBe(false)
   })
 
+  it('room.notes untuk layar hanya berisi Notes yang boleh dibaca', () => {
+    const all = { [HOST]: 'Traktir es teh.', [GUEST]: 'Bayar parkir.' }
+    expect(mergeReadableNotes(runningRoom(), all, GUEST).notes).toEqual({ [GUEST]: 'Bayar parkir.' })
+    const hostWon = runningRoom({
+      result: { outcome: 'win', reason: 'forfeit', winnerUid: HOST, loserUid: GUEST, at: START + 5_000 },
+    })
+    expect(mergeReadableNotes(hostWon, all, GUEST).notes).toEqual(all)
+    expect(mergeReadableNotes(hostWon, {}, 'orang-lain')).not.toHaveProperty('notes')
+    expect(mergeReadableNotes(null, all, HOST)).toBeNull()
+  })
+
   it('13. nilai poin cocok dengan hasil', () => {
     const at = START + 10 * 60_000 + 30_000
     const room = runningRoom({ result: { outcome: 'win', reason: 'forfeit', winnerUid: HOST, loserUid: GUEST, at } })
@@ -259,11 +271,11 @@ describe('Notes, poin, dan Lobi', () => {
 
   it('15. battle tidak bisa dimulai bila Notes belum 2/2 atau salah satu belum siap', () => {
     expect(canStartBattle(lobbyRoom())).toBe(true)
-    expect(canStartBattle(lobbyRoom({ notes: { [HOST]: 'x' } }))).toBe(false)
+    expect(canStartBattle(lobbyRoom({ notesSet: { [HOST]: true } }))).toBe(false)
     expect(canStartBattle(lobbyRoom({ ready: { [HOST]: true } }))).toBe(false)
     expect(canStartBattle(lobbyRoom({ startRequested: false }))).toBe(false)
     expect(canRequestStart(lobbyRoom({ startRequested: false, ready: {} }), START)).toBe(true)
-    expect(canRequestStart(lobbyRoom({ notes: { [HOST]: 'x' }, startRequested: false }), START)).toBe(false)
+    expect(canRequestStart(lobbyRoom({ notesSet: { [HOST]: true }, startRequested: false }), START)).toBe(false)
     expect(canRequestStart(lobbyRoom({ guestUid: undefined, startRequested: false }), START)).toBe(false)
   })
 

@@ -99,7 +99,6 @@ export function createRoom(uid, { durationMin = NORMAL_RULES.defaultDurationMin,
   const roomId = randomId()
   const createdAt = now()
   const meta = { hostUid: uid, durationMin: duration, createdAt, expiresAt: createdAt + rules.roomTtlMs }
-  // [TERBUKA] meta.mode hanya di mock; rules Firebase belum mengenal mode demo
   if (isDemo) meta.mode = MODES.DEMO
 
   state.db.rooms[roomId] = { meta }
@@ -134,7 +133,10 @@ export function setNotes(uid, roomId, text) {
   if (!validateNotes(text, rules)) {
     fail(ERROR_CODES.INVALID_ARGUMENT, `Notes harus 1 sampai ${rules.notes.maxLength} karakter.`)
   }
-  room.notes = { ...room.notes, [uid]: text }
+  // Sama dengan Firebase: isi di roomNotes (rahasia), penanda di room
+  state.db.roomNotes = state.db.roomNotes ?? {}
+  state.db.roomNotes[roomId] = { ...state.db.roomNotes[roomId], [uid]: text }
+  room.notesSet = { ...room.notesSet, [uid]: true }
   commit(roomId)
 }
 
