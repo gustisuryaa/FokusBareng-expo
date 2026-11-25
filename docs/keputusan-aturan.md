@@ -95,7 +95,7 @@ Prinsip: **klien mengklaim hasil, rules memeriksa bukti.**
 - Klien yang melihat kondisi kalah terpenuhi (biasanya klien lawan) menulis `result`. `result` hanya bisa ditulis sekali. Kalau dua klien menulis bersamaan, yang pertama diterima dan galat yang kedua diabaikan.
 - Klien yang memuat room `berjalan` mengevaluasi kondisi saat dimuat dan setiap kali presence atau respons berubah. Ini menutup kasus kedua pemain putus bersamaan.
 - Poin: setiap klien menulis `history` miliknya sendiri **setelah** `result` ada, sekali per room. Rules memastikan nilainya cocok dengan hasil.
-- Notes lawan hanya terbaca bila `result` menyatakan lawan itu pemenang.
+- Notes lawan hanya terbaca bila `result` menyatakan lawan itu pemenang. Isinya disimpan di `roomNotes/{roomId}/{uid}`, terpisah dari room (struktur-data v1.3).
 - Logika wasit yang sama ditulis sebagai fungsi murni di `src/domain/referee.js`, dipakai oleh mock dan klien Firebase. Rules dan `referee.js` harus selalu menghasilkan keputusan yang sama.
 
 **Celah yang tidak bisa ditutup rules (diputuskan: opsi A, Gusti 23 Nov; kabarkan ke Naufal):** jadwal Check-In terbaca klien sejak battle mulai (bisa dilihat lewat DevTools). `referee.js` membaca jadwal hanya lewat `getCheckInWindows()`, jadi pindah ke opsi B cukup mengganti fungsi itu.
@@ -160,7 +160,7 @@ Pengunjung expo tidak akan duduk 15 menit.
 | Batas respons | 20 detik | 20 detik |
 | Poin | +30 / +15 / +5 | tidak ada poin |
 
-Dipilih lewat `?mode=demo`. **Mock boleh memakai mode demo sekarang.** Untuk Firebase masih **[TERBUKA]**: `database.rules.json` mewajibkan `offsetMs >= 240000` dan durasi 15/25/45/60, jadi mode demo ditolak rules. Pilihannya: rules mengizinkan `meta.mode = "demo"` dengan batas terpisah, atau demo expo memakai mock.
+Dipilih lewat `?mode=demo`. Berlaku di mock dan Firebase (diputuskan 25 Nov, disetujui Naufal): room demo menyimpan `meta.mode = "demo"`, dan rules memakai batas terpisah (durasi 3 menit, Check-In pertama paling cepat detik ke-30) serta menolak `history` untuk room demo, jadi tidak ada poin. Jarak 40 sampai 60 detik antar Check-In, seperti di mode normal, tidak divalidasi rules.
 
 ## 9. Poin dan gelar [USULAN]
 
@@ -175,6 +175,8 @@ Dipilih lewat `?mode=demo`. **Mock boleh memakai mode demo sekarang.** Untuk Fir
 Menang hanya terjadi bila tepat satu pemain gagal, jadi sebagian besar battle kemungkinan berakhir seri. Tinjau ulang setelah uji dua perangkat (WBS 4.1.2).
 
 Akun baru: 0 poin, gelar Teralihkan.
+
+**Poin Belajar Mandiri [TERBUKA].** Kelompok memutuskan (24 Nov 2026) Belajar Mandiri **memberi poin**, tapi besarnya belum diputuskan (usulan Naufal: 1 jam = 1 poin, duel dua kali lipat). Jangan dikodekan sampai angkanya ada. Figma M10/D07 masih menulis "Tidak ada poin dan gelar" dan perlu diubah.
 
 ## 10. Teks yang belum ada di Figma [USULAN]
 
@@ -215,5 +217,7 @@ Kesalahan kecil di Figma (header M01w "0 poin", "Putus" di M22, label prototype 
 - [ ] Catatan Perubahan: milestone modul kode inti (20 Nov) dan jalur kritis Back-End sudah lewat.
 - [ ] Charter/WBS: masukkan angka di bagian 3 dan 9 setelah tim memutuskan.
 - [x] Opsi celah Check-In: A (bagian 5).
-- [ ] Putuskan mode demo di Firebase (bagian 8) sebelum back-end dikunci.
-- [ ] Belajar Mandiri tercatat sebagai usulan desain (perlu Catatan Perubahan bila dipertahankan).
+- [x] Mode demo di Firebase: rules mengizinkan `meta.mode = "demo"` (bagian 8).
+- [ ] Catatan Perubahan: Belajar Mandiri dan Pemilihan Teknik dikodekan (keputusan 24 Nov), tambah item WBS 3.2.5, ubah Charter ("hanya didesain" jadi dikodekan).
+- [ ] Tentukan besar poin Belajar Mandiri (bagian 9, [TERBUKA]), lalu ubah Figma M10/D07 dan kode.
+- [ ] Catatan Perubahan: leaderboard di luar lingkup (belum tertulis di Charter).

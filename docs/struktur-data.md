@@ -1,6 +1,8 @@
 # Struktur Data FokusBareng
 
-Versi 1.2, 23 November 2026. Kontrak antara front-end (Gusti) dan back-end (Naufal).
+Versi 1.3, 25 November 2026. Kontrak antara front-end (Gusti) dan back-end (Naufal).
+
+Perubahan v1.3 (disetujui Naufal 25 Nov): **Notes rahasia** pindah ke `roomNotes/{roomId}/{uid}`, room hanya memegang penanda `notesSet/{uid}`. **Mode demo** berlaku juga di Firebase: `meta.mode = "demo"`, durasi 3 menit, Check-In pertama paling cepat detik ke-30, tanpa poin. `createRoom` menerima `mode`.
 
 Perubahan v1.2 (Tahap 3 front-end): kontrak services ditambah `setPresence`, `getProfile` mengembalikan statistik turunan lengkap, rumus `focusMin` dibatasi sampai akhir timer, `meta.mode` khusus mock (bagian 1).
 
@@ -18,7 +20,7 @@ users/
     profile/
       name: string          1 sampai 60 karakter
       createdAt: number     ServerValue.TIMESTAMP
-    history/
+    history/                (tidak ada untuk room demo)
       {roomId}/
         delta: number       30 | 15 | 5, harus cocok dengan rooms/{roomId}/result
         outcome: "win" | "draw" | "loss"   harus cocok dengan result
@@ -30,21 +32,21 @@ rooms/
   {roomId}/
     meta/
       hostUid: string
-      durationMin: number   15 | 25 | 45 | 60, bawaan 25, boleh diubah host sebelum battle
+      durationMin: number   15 | 25 | 45 | 60, bawaan 25, boleh diubah host sebelum battle; demo: 3
       createdAt: number     ServerValue.TIMESTAMP
       expiresAt: number     maksimal createdAt + 30 menit
-      mode: "demo"          [TERBUKA] hanya di mock untuk ?mode=demo; tidak ada di room normal
+      mode: "demo"          hanya di room demo (?mode=demo); tidak ada di room normal
     guestUid: string        ditulis sekali oleh tamu
     startRequested: boolean host menekan "Mulai Adu Fokus"; false bila ada yang menekan Batal
     ready/
       {uid}: boolean        "Aku siap" di Konfirmasi Kefokusan
-    notes/
-      {uid}: string         1 sampai 140 karakter, wajib
+    notesSet/
+      {uid}: true           penanda Notes sudah diisi; hanya boleh bila roomNotes/{roomId}/{uid} ada
     battle/                 ditulis sekali oleh host
       startedAt: number     ServerValue.TIMESTAMP
       checkIns/
         {i}/                i = "0", "1", ...
-          offsetMs: number  >= 240000 dan < durationMin * 60000
+          offsetMs: number  >= 240000 (demo: >= 30000) dan < durationMin * 60000
     responses/
       {uid}/
         {i}: number         ServerValue.TIMESTAMP
@@ -59,6 +61,11 @@ rooms/
       loserUid: string      hanya bila outcome = "win"
       checkInIndex: number  hanya bila reason = "missed_checkin"
       at: number            ServerValue.TIMESTAMP
+
+roomNotes/
+  {roomId}/
+    {uid}: string           1 sampai 140 karakter, wajib. Rahasia: terpisah dari rooms/ karena
+                            izin baca rooms/{roomId} berlaku untuk semua anaknya
 ```
 
 ## 2. Siapa menulis apa, dan kapan
@@ -66,13 +73,13 @@ rooms/
 | Path | Penulis | Kapan | Batasan rules |
 |---|---|---|---|
 | `users/{uid}/profile` | pemilik | saat Daftar | hanya pemilik |
-| `users/{uid}/history/{roomId}` | pemilik | setelah `result` ada | sekali, `delta` dan `outcome` cocok dengan hasil, `focusMin` cocok dengan waktu battle |
-| `rooms/{id}/meta` | host | saat Buat Room | sekali, durasi valid, `expiresAt` maksimal +30 menit |
-| `rooms/{id}/meta/durationMin` | host | di Lobi | 15/25/45/60, sebelum `battle` ada |
+| `users/{uid}/history/{roomId}` | pemilik | setelah `result` ada | sekali, `delta` dan `outcome` cocok dengan hasil, `focusMin` cocok dengan waktu battle, bukan room demo |
+| `rooms/{id}/meta` | host | saat Buat Room | sekali, durasi valid, `expiresAt` maksimal +30 menit, `mode` hanya `"demo"` dan tidak bisa diubah |
+| `rooms/{id}/meta/durationMin` | host | di Lobi | 15/25/45/60 (demo: 3), sebelum `battle` ada dan room belum kedaluwarsa |
 | `rooms/{id}/guestUid` | tamu | saat membuka tautan | sekali, bukan host, room belum kedaluwarsa |
 | `rooms/{id}/startRequested` | host (true), peserta mana pun (false) | Mulai / Batal | true hanya bila ada tamu dan Notes 2/2, sebelum `battle` ada |
 | `rooms/{id}/ready/{uid}` | pemilik | di Konfirmasi Kefokusan | hanya peserta, hanya saat `startRequested = true`, sebelum `battle` ada |
-| `rooms/{id}/notes/{uid}` | pemilik | di Lobi | hanya peserta, sebelum `battle` ada, 1 sampai 140 karakter |
+| `roomNotes/{id}/{uid}` dan `rooms/{id}/notesSet/{uid}` | pemilik | di Lobi, satu multi-path update | hanya peserta, sebelum `battle` ada, room belum kedaluwarsa, 1 sampai 140 karakter, tidak bisa dihapus |
 | `rooms/{id}/battle` | host | kedua `ready` true | sekali, `startedAt = now`, minimal satu Check-In |
 | `rooms/{id}/responses/{uid}/{i}` | pemilik | saat Check-In | sekali, nilainya `now`, di dalam jendela 20 detik, sebelum `result` ada |
 | `rooms/{id}/presence/{uid}` | pemilik | terus-menerus + `onDisconnect` | `lastSeen = now` |
@@ -81,7 +88,7 @@ rooms/
 Hak baca:
 - `meta` dan `guestUid` terbaca semua pengguna yang sudah masuk (dibutuhkan untuk cek "room penuh" dan "tautan tidak berlaku").
 - Bagian room lainnya hanya terbaca host dan tamu.
-- `notes/{uid}` terbaca pemiliknya, atau lawan **hanya bila** `result.outcome = "win"` dan `result.winnerUid = uid`.
+- `roomNotes/{roomId}/{uid}` terbaca pemiliknya, atau lawan **hanya bila** `result.outcome = "win"` dan `result.winnerUid = uid`. `notesSet` terbaca kedua peserta seperti bagian room lainnya.
 
 ## 3. Nilai turunan (tidak disimpan, dihitung di klien)
 
@@ -94,7 +101,7 @@ Hak baca:
 | Total waktu fokus | jumlah `focusMin` di `history` |
 | "Terakhir: menang lawan X" | entri `history` dengan `at` terbesar |
 | Penanda room `#XXXX` | 4 karakter terakhir `roomId`, huruf kapital. Hanya tampilan |
-| Notes 1/2, 2/2 | jumlah `notes/{uid}` yang terisi |
+| Notes 1/2, 2/2 | jumlah `notesSet/{uid}` yang bernilai true |
 | Sisa waktu Arena | `startedAt + durationMin * 60000 - serverNow` |
 | Check-In aktif | indeks `i` dengan `T <= serverNow <= T + 20 detik` |
 
@@ -116,11 +123,11 @@ getProfile(uid)                        // -> { name, createdAt, points, tier, ne
                                        //      totalFocusMin, lastMatch } (dihitung src/domain/profile.js)
 
 // room
-createRoom({ durationMin = 25 })       // -> roomId
+createRoom({ durationMin = 25, mode }) // -> roomId; mode "demo" memaksa durasi demo dan menulis meta.mode
 openRoom(roomId)                       // -> 'host_lobby' | 'guest_lobby' | 'arena' | 'result' | 'full' | 'invalid'
                                        //    (tabel di keputusan-aturan.md bagian 7; tamu baru ikut dicatat)
 setDuration(roomId, durationMin)       // host saja, sebelum battle
-setNotes(roomId, text)
+setNotes(roomId, text)                 // roomNotes + notesSet dalam satu update
 requestStart(roomId)                   // host: "Mulai Adu Fokus"
 cancelStart(roomId)                    // siapa pun: "Batal" di Konfirmasi
 confirmReady(roomId)                   // "Aku siap"
@@ -130,7 +137,9 @@ answerCheckIn(roomId, index)
 forfeit(roomId)                        // keluar sengaja = kalah
 claimResult(roomId, result)            // dipanggil saat referee.js menyatakan battle selesai
 applyPoints(roomId)                    // menulis history milik sendiri
-listenRoom(roomId, callback)           // -> unsubscribe, callback menerima seluruh isi room
+listenRoom(roomId, callback)           // -> unsubscribe, callback menerima isi room ditambah room.notes
+                                       //    berisi Notes yang boleh dibaca (referee.mergeReadableNotes).
+                                       //    Bukan peserta hanya menerima meta dan guestUid.
 getServerOffset()                      // -> ms, selisih jam server dan perangkat
 
 // Belajar Mandiri [USULAN], lihat docs/usulan-firebase-v1.3.md bagian 4
@@ -152,7 +161,7 @@ Mock juga menyediakan panel dev untuk mensimulasikan lawan: bergabung, siap, ter
 | `room.status` | dihitung (bagian 3) | Tidak disimpan supaya tidak bisa tidak sinkron |
 | `room.waktu_mulai` | `battle/startedAt` | |
 | `room.waktu_selesai` | `result/at` | |
-| `peserta_room(id_room, uid, notes, siap)` | `meta.hostUid`, `guestUid`, `notes/{uid}`, `ready/{uid}` | |
+| `peserta_room(id_room, uid, notes, siap)` | `meta.hostUid`, `guestUid`, `roomNotes/{roomId}/{uid}`, `ready/{uid}` | Notes dipisah supaya rahasia |
 | `peserta_room.hasil`, `poin_didapat` | `result` + `users/{uid}/history/{roomId}` | |
 | `check_in(id_room, urutan, waktu_jadwal)` | `battle/checkIns/{i}/offsetMs` | `waktu_jadwal = startedAt + offsetMs` |
 | `respons_check_in(id_check_in, uid, waktu_respons)` | `responses/{uid}/{i}` | |
@@ -167,6 +176,8 @@ Butir 1 sampai 7 di bawah (kebutuhan v1.1) sudah diterapkan di `database.rules.j
 
 - Room kedaluwarsa (`now > meta/expiresAt`) mengunci `meta/durationMin`, `notes`, `startRequested: true`, `ready`, dan `battle`, sama dengan status `kedaluwarsa` di bagian 3. Batal (`startRequested: false`) tetap boleh.
 - `result` hanya menerima field di bagian 1; field lain ditolak.
+
+Tambahan v1.3: `roomNotes` dan `notesSet` (skenario 11), cabang demo di `meta.mode`, `durationMin`, dan `offsetMs`, serta `history` ditolak untuk room demo.
 
 Kebutuhan v1.1:
 

@@ -1,4 +1,6 @@
-# Usulan untuk struktur-data v1.3 (perlu keputusan Naufal)
+# Usulan untuk struktur-data v1.3
+
+> **Status 25 November 2026:** bagian 1 (Notes rahasia), 2 (Batal), dan 3 (mode demo, pilihan rules) disetujui Naufal dan sudah diterapkan di `struktur-data.md` v1.3, rules, services, dan mock. Bagian 4 butir 1 (poin Belajar Mandiri) masih [TERBUKA].
 
 23 November 2026. Ditulis saat cicilan pertama `src/services/firebase/`. Services saat ini mengikuti **v1.2 persis**; tidak ada yang di bawah ini sudah dikodekan.
 

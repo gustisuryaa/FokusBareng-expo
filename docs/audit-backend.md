@@ -55,5 +55,5 @@ Status tes saat audit:
 ## Rencana perbaikan
 
 - **Fase 1 (dikerjakan 25 Nov):** butir 4, 5, 6, 7, 8, 11, ditambah tes rules, tes mock, dan tes integrasi baru, lalu dokumen yang basi diperbarui. `npm test` dan `npm run build` lolos. **`npm run test:rules` dan `npm run test:emulator` belum dijalankan**; jalankan di Mac sebelum commit.
-- **Fase 2 (butuh keputusan):** butir 1 (Notes rahasia) dan butir 2 (mode demo), termasuk mock, `referee.js`, layar Hasil, dan tes skenario 11.
+- **Fase 2 (dikerjakan 25 Nov, disetujui Naufal):** butir 1 (Notes rahasia: `roomNotes` + `notesSet`) dan butir 2 (mode demo pilihan A), termasuk mock, `referee.js`, services, tes skenario 11, dan `struktur-data.md` v1.3. `npm test` dan `npm run build` lolos; tes Emulator perlu dijalankan di Mac.
 - **Fase 3 (butuh project ID):** butir 3, lalu uji dua perangkat (WBS 4.1.2).

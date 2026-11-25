@@ -4,7 +4,7 @@ Web app **Adu Fokus 1v1 real-time** untuk mahasiswa Informatika UII. Dua pemain 
  
 Proyek kelompok **E-Duel**, untuk mata kuliah Pengembangan Aplikasi Berbasis Web (SIF302) dan proyek expo Manajemen Pengembangan Teknologi Informasi (MPTI), Informatika FTI UII, semester gasal 2026/2027.
  
-> **Status (25 November 2026):** front-end lima fitur wajib selesai. Services Firebase dan `database.rules.json` sudah ada, dan Emulator memakai rules asli. Berikutnya: Notes rahasia, mode demo di Firebase, dan deploy (lihat [`docs/audit-backend.md`](docs/audit-backend.md)).
+> **Status (25 November 2026):** front-end lima fitur wajib selesai. Services Firebase dan `database.rules.json` sudah ada, dan Emulator memakai rules asli. Notes rahasia dan mode demo sudah berlaku di Firebase. Berikutnya: deploy dan uji dua perangkat (lihat [`docs/audit-backend.md`](docs/audit-backend.md)).
  
 ## Fitur
  
@@ -80,7 +80,7 @@ npm run dev:emulator    # aplikasi penuh di atas Firebase Emulator (butuh Java)
 
 `npm run dev:emulator` memakai `.env.emulator` (project demo, tanpa akun Firebase). Setiap tab browser menjadi pengguna terpisah, jadi alur 1v1 bisa dicoba di dua tab: daftar dua akun, buat room di tab pertama, buka tautannya di tab kedua. Akun dan room disimpan di `.firebase/emulator-data` saat perintah dihentikan dengan Ctrl+C, lalu dimuat lagi di run berikutnya. Hapus folder itu untuk mulai dari kosong. Akun yang didaftarkan di mode mock (`npm run dev`) tidak ada di Emulator. Emulator memuat `database.rules.json`, jadi penulisan yang ditolak di sini juga akan ditolak di produksi.
  
-Mode demo untuk expo (battle 3 menit, Check-In lebih rapat, tanpa poin) direncanakan lewat `?mode=demo` dan masih menunggu keputusan tim.
+Mode demo untuk expo (battle 3 menit, Check-In lebih rapat, tanpa poin) dibuka lewat `?mode=demo`, di mock maupun Firebase.
  
 ## Struktur repo
  
