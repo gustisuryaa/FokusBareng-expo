@@ -33,7 +33,7 @@ Services Firebase saat ini **mengabaikan** `?mode=demo` dan membuat room normal 
 - Rules mengizinkan `meta.mode = "demo"` dengan batas Check-In dan poin sendiri.
 - Demo expo memakai mock di satu perangkat dengan panel lawan tiruan.
 
-## 4. Belajar Mandiri (dikodekan 24 November 2026, sesuai Figma tanpa poin)
+## 4. Belajar Mandiri (dikodekan 24 November 2026; poin [TERBUKA])
 
 Sudah dikodekan dengan nilai **[USULAN]** di `SOLO_RULES` (`src/config/gameRules.js`) dan logika di `src/domain/solo.js`:
 
@@ -44,7 +44,7 @@ Sudah dikodekan dengan nilai **[USULAN]** di `SOLO_RULES` (`src/config/gameRules
 
 Yang masih perlu diputuskan:
 
-1. **Poin.** Figma menulis "TANPA POIN" dan "Tidak ada poin dan gelar", Naufal mengusulkan 1 jam = 1 poin dan duel dua kali lipat. Kalau berpoin: ubah `SOLO_RULES.awardsPoints`, teks chip dan subjudul M10/D07, serta cara `getProfile` menjumlahkan poin.
+1. **Poin [TERBUKA].** Diputuskan kelompok 24 Nov: Belajar Mandiri **memberi poin**, besarnya belum diputuskan (usulan Naufal: 1 jam = 1 poin, duel dua kali lipat). Kode saat ini masih tanpa poin dan Figma masih menulis "TANPA POIN" dan "Tidak ada poin dan gelar". Setelah angkanya ada: ubah `SOLO_RULES.awardsPoints`, teks chip dan subjudul M10/D07, serta cara `getProfile` menjumlahkan poin.
 2. **Rules** untuk `users/{uid}/solo`: hanya pemilik; `technique` salah satu dari tiga; `focusMin` bilangan bulat dan tidak melebihi `(endedAt - startedAt) / 60000`; `endedAt <= now`. Mock sudah memeriksa hal yang sama.
 3. Catatan Perubahan resmi di `docs/resmi/` (Charter dan WBS 2.2.2 masih menyebut "hanya didesain").
 
@@ -61,4 +61,4 @@ Yang masih perlu diputuskan:
 
 ## 6. Cara menguji services
 
-`npm run test:emulator` menjalankan `tests/firebase.integration.test.js` (alur daftar, room, Notes, siap, battle, keluar Arena, poin) di Emulator dengan rules terbuka `tests/emulator/open.rules.json`. Rules terbuka ini **hanya untuk Emulator**; `firebase.emulator.json` sengaja terpisah dari `firebase.json` supaya tidak pernah ter-deploy.
+`npm run test:emulator` menjalankan `tests/firebase.integration.test.js` (alur daftar, room, Notes, siap, battle, keluar Arena, poin) di Emulator dengan `database.rules.json` (sejak 25 Nov; sebelumnya rules terbuka `tests/emulator/open.rules.json`, kini tidak dipakai). `firebase.emulator.json` tetap terpisah dari `firebase.json` karena berisi pengaturan Emulator.

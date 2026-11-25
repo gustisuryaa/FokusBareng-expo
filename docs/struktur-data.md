@@ -4,7 +4,7 @@ Versi 1.2, 23 November 2026. Kontrak antara front-end (Gusti) dan back-end (Nauf
 
 Perubahan v1.2 (Tahap 3 front-end): kontrak services ditambah `setPresence`, `getProfile` mengembalikan statistik turunan lengkap, rumus `focusMin` dibatasi sampai akhir timer, `meta.mode` khusus mock (bagian 1).
 
-Perubahan dari v1: durasi bisa diubah di Lobi, field `startRequested`, Notes wajib maksimal 140 karakter, `history` ditambah `outcome`, `focusMin`, `opponentName`, `at`. Semua ini **belum ada di `database.rules.json`** dan harus ditambahkan (bagian 6).
+Perubahan dari v1: durasi bisa diubah di Lobi, field `startRequested`, Notes wajib maksimal 140 karakter, `history` ditambah `outcome`, `focusMin`, `opponentName`, `at`. Semua ini sudah ada di `database.rules.json` (bagian 6).
 
 - Implementasi mock di front-end **wajib** memakai bentuk yang sama persis, supaya pergantian ke Firebase cukup lewat `VITE_DATA_SOURCE`.
 - Kalau ada perubahan, ubah file ini dulu, lalu `database.rules.json`, `src/domain/referee.js`, dan implementasi mock pada hari yang sama.
@@ -161,9 +161,14 @@ Mock juga menyediakan panel dev untuk mensimulasikan lawan: bergabung, siap, ter
 
 **Kode undangan:** ERD memakai `kode_undangan CHAR(6)`. Usulan di sini adalah memakai `roomId` dari push key Firebase (20 karakter) langsung di tautan, tanpa kode 6 karakter. Alasannya, kode 6 karakter bisa ditebak, sehingga orang asing bisa masuk ke room orang lain. Push key praktis tidak bisa ditebak. Konsekuensinya, room hanya bisa dimasuki lewat tautan, tidak dengan mengetik kode. **[TERBUKA]** Kalau tim tetap ingin kode yang bisa diketik, perlu node tambahan `inviteCodes/{kode}: roomId` dan rules-nya.
 
-## 6. Perubahan rules yang dibutuhkan v1.1
+## 6. Status rules
 
-`database.rules.json` versi 23 Nov masih mengikuti v1. Yang perlu ditambahkan Naufal:
+Butir 1 sampai 7 di bawah (kebutuhan v1.1) sudah diterapkan di `database.rules.json` dan diuji `tests/rules.test.js`. Tambahan 25 Nov (audit back-end, `docs/audit-backend.md`):
+
+- Room kedaluwarsa (`now > meta/expiresAt`) mengunci `meta/durationMin`, `notes`, `startRequested: true`, `ready`, dan `battle`, sama dengan status `kedaluwarsa` di bagian 3. Batal (`startRequested: false`) tetap boleh.
+- `result` hanya menerima field di bagian 1; field lain ditolak.
+
+Kebutuhan v1.1:
 
 1. `meta/durationMin` boleh ditulis ulang oleh host selama `battle` belum ada.
 2. Node `startRequested`: host boleh menulis true (bila `guestUid` ada dan kedua Notes terisi), peserta mana pun boleh menulis false, sebelum `battle` ada.
