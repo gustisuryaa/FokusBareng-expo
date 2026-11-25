@@ -166,9 +166,19 @@ export function onAuthChange(callback) {
 
 // ---------- profil ----------
 
+// Daftar membuat akun Auth dulu, baru profil. Bila profil gagal tersimpan (misalnya sinyal putus),
+// profil milik sendiri ditulis ulang dari displayName supaya Dasbor tetap bisa dimuat.
+async function restoreOwnProfile(uid) {
+  const user = firebase().auth.currentUser
+  const name = String(user?.displayName ?? '').trim()
+  if (user?.uid !== uid || name.length < 1) fail(ERROR_CODES.NOT_FOUND, 'Profil tidak ditemukan.')
+  await set(ref(db(), `users/${uid}/profile`), { name: name.slice(0, 60), createdAt: serverTimestamp() })
+  return get(ref(db(), `users/${uid}/profile`))
+}
+
 export const getProfile = guarded(async (uid) => {
-  const profile = await get(ref(db(), `users/${uid}/profile`))
-  if (!profile.exists()) fail(ERROR_CODES.NOT_FOUND, 'Profil tidak ditemukan.')
+  let profile = await get(ref(db(), `users/${uid}/profile`))
+  if (!profile.exists()) profile = await restoreOwnProfile(uid)
   // Riwayat pengguna lain bisa ditolak rules; untuk lawan cukup nama
   const history = await get(ref(db(), `users/${uid}/history`))
     .then((snapshot) => snapshot.val() ?? {})
@@ -266,6 +276,7 @@ export const startBattle = guarded(async (roomId) => {
   const uid = requireUid()
   const room = await loadRoom(roomId)
   requireHost(room, uid)
+  requireLobby(room)
   if (!canStartBattle(room)) fail(ERROR_CODES.PERMISSION_DENIED, 'Kedua pemain belum siap.')
   const rules = getRoomRules(room)
   // Tulis sekali: battle kedua (misalnya tab ganda) ditolak
@@ -357,13 +368,22 @@ export const listSoloSessions = guarded(async () => {
   return snapshot.val() ?? {}
 })
 
-// Room hilang atau akses ditolak sama-sama dikabarkan sebagai null, seperti mock
+// Room hilang dikabarkan sebagai null, seperti mock. Bukan peserta ditolak rules membaca seluruh room,
+// jadi ia menerima meta dan guestUid saja (untuk nama di layar room penuh).
 export function listenRoom(roomId, callback) {
-  return onValue(
+  let active = true
+  const unsubscribe = onValue(
     roomRef(roomId),
     (snapshot) => callback(snapshot.val()),
-    () => callback(null),
+    async () => {
+      const partial = await loadRoomForEntry(roomId, null).catch(() => null)
+      if (active) callback(partial)
+    },
   )
+  return () => {
+    active = false
+    unsubscribe()
+  }
 }
 
 // .info hanya bisa didengar, tidak bisa dibaca dengan get()

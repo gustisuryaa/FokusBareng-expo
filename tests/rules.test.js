@@ -122,6 +122,23 @@ describe.skipIf(!HOST_ADDR)('database.rules.json (emulator)', () => {
       await denied(write(GUEST, `rooms/${ROOM}/guestUid`, GUEST))
     })
 
+    it('room kedaluwarsa: durasi, Notes, Mulai, siap, dan battle terkunci; Batal tetap boleh', async () => {
+      const now = Date.now()
+      const battle = { startedAt: serverTimestamp(), checkIns: { 0: { offsetMs: 4 * MIN } } }
+      await admin('PUT', `rooms/${ROOM}`, {
+        ...lobby(),
+        meta: { hostUid: HOST, durationMin: 25, createdAt: now - 31 * MIN, expiresAt: now - MIN },
+        startRequested: true,
+        ready: { [HOST]: true },
+      })
+      await denied(write(HOST, `rooms/${ROOM}/meta/durationMin`, 45))
+      await denied(write(GUEST, `rooms/${ROOM}/notes/${GUEST}`, 'Notes baru'))
+      await denied(write(HOST, `rooms/${ROOM}/startRequested`, true))
+      await denied(write(GUEST, `rooms/${ROOM}/ready/${GUEST}`, true))
+      await denied(write(HOST, `rooms/${ROOM}/battle`, battle))
+      await allowed(update(ref(as(GUEST), `rooms/${ROOM}`), { startRequested: false, ready: null }))
+    })
+
     it('16. durasi dan Notes terkunci setelah battle mulai; Notes kosong atau lebih dari 140 ditolak', async () => {
       await admin('PUT', `rooms/${ROOM}`, lobby({ withNotes: false }))
       await denied(write(GUEST, `rooms/${ROOM}/meta/durationMin`, 45))
@@ -219,6 +236,13 @@ describe.skipIf(!HOST_ADDR)('database.rules.json (emulator)', () => {
       const timeup = { outcome: 'draw', reason: 'timeup', at: serverTimestamp() }
       await allowed(write(HOST, `rooms/${ROOM}/result`, timeup))
       await denied(write(GUEST, `rooms/${ROOM}/result`, timeup))
+    })
+
+    it('hasil dengan field tambahan ditolak', async () => {
+      await admin('PUT', `rooms/${ROOM}`, running(26 * MIN))
+      const timeup = { outcome: 'draw', reason: 'timeup', at: serverTimestamp() }
+      await denied(write(HOST, `rooms/${ROOM}/result`, { ...timeup, catatan: 'bebas' }))
+      await allowed(write(HOST, `rooms/${ROOM}/result`, timeup))
     })
 
     it('timer habis: seri hanya setelah durasi lewat', async () => {

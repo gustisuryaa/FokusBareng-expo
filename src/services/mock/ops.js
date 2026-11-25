@@ -167,6 +167,7 @@ export function confirmReady(uid, roomId) {
 export function startBattle(uid, roomId) {
   const room = getRoom(roomId)
   requireHost(room, uid)
+  requireLobby(room)
   if (!canStartBattle(room)) fail(ERROR_CODES.PERMISSION_DENIED, 'Kedua pemain belum siap.')
   const rules = getRoomRules(room)
   room.battle = {

@@ -96,6 +96,15 @@ describe('mock services', () => {
     expect(state.db.rooms[roomId].startRequested).toBe(false)
   })
 
+  it('room kedaluwarsa tidak bisa memulai battle walau kedua pemain sudah siap', () => {
+    const roomId = lobbyWithGuest()
+    ops.requestStart(HOST, roomId)
+    ops.confirmReady(HOST, roomId)
+    ops.confirmReady(GUEST, roomId)
+    time += NORMAL_RULES.roomTtlMs + 1
+    expect(code(() => ops.startBattle(HOST, roomId))).toBe('permission-denied')
+  })
+
   it('16. durasi dan Notes terkunci setelah battle mulai; tamu tidak bisa ubah durasi', () => {
     const roomId = lobbyWithGuest()
     expect(code(() => ops.setDuration(GUEST, roomId, 45))).toBe('permission-denied')

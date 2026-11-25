@@ -1,7 +1,7 @@
 // Tes services Firebase terhadap Emulator Auth dan Realtime Database.
 // Jalankan: npm run test:emulator (butuh Java). Di `npm test` biasa tes ini dilewati.
-// Rules di sini sengaja terbuka (tests/emulator/open.rules.json): yang diuji alur services,
-// bukan rules. Tes rules sungguhan ada di tests/rules.test.js setelah database.rules.json final.
+// Emulator memuat database.rules.json (firebase.emulator.json), jadi tes ini juga memastikan
+// setiap penulisan services lolos rules asli. Kasus tolak-terima per rules ada di tests/rules.test.js.
 
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
@@ -83,6 +83,18 @@ describe.skipIf(!hasEmulator)('services Firebase (emulator)', () => {
     expect(await services.openRoom('room-tidak-ada')).toBe('invalid')
   })
 
+  it('orang ketiga hanya menerima meta dan guestUid dari listenRoom', async () => {
+    const room = await new Promise((resolve) => {
+      const stop = services.listenRoom(roomId, (value) => {
+        stop()
+        resolve(value)
+      })
+    })
+    expect(room.meta.hostUid).toBe(uidA)
+    expect(room.guestUid).toBe(uidB)
+    expect(room.notes).toBeUndefined()
+  })
+
   it('Notes, Mulai, siap, lalu battle berjalan', async () => {
     await as(emailB)
     await services.setNotes(roomId, 'Traktir es teh.')
@@ -147,6 +159,14 @@ describe.skipIf(!hasEmulator)('services Firebase (emulator)', () => {
     const entry = { technique: 'pomodoro', focusMin: 25, startedAt: endedAt - 30 * 60_000, endedAt, completed: true }
     const id = await services.saveSoloSession(entry)
     expect(await services.listSoloSessions()).toMatchObject({ [id]: entry })
+  })
+
+  it('profil sendiri yang hilang ditulis ulang dari nama akun', async () => {
+    const { firebase } = await import('../src/services/firebase/app.js')
+    const { ref, set } = await import('firebase/database')
+    await set(ref(firebase().db, `users/${uidA}/profile`), null)
+    expect(await services.getProfile(uidA)).toMatchObject({ name: 'Pemain A', points: 5 })
+    await expect(services.getProfile('uid-tidak-ada')).rejects.toMatchObject({ code: ERROR_CODES.NOT_FOUND })
   })
 
   it('selisih jam server berupa angka', async () => {
