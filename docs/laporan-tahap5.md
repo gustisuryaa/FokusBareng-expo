@@ -21,7 +21,7 @@
 - Penghitung Notes desktop di bawah kolom, bukan sejajar label.
 - Nama gelar lawan di kartu Arena desktop belum ditampilkan.
 - Dasbor dan Arena di 1024: kolom membagi lebar secara proporsional, nama gelar di tangga bisa turun dua baris.
-- Teks usulan Claude (belum ada di Figma): "Sedang mendaftar", "Gelar tertinggi sudah kamu raih", "Room gagal dibuat. Coba lagi.", "Profil gagal dimuat.", "Menunggu lawan siap", "Tulis Notes kamu, lalu mulai saat Notes 2/2.", "Notes tersimpan", "Membuka room…", "Memuat Arena…", "Memuat hasil…", "Mode demo, poin tidak dicatat.".
+- Teks usulan (belum ada di Figma): "Sedang mendaftar", "Gelar tertinggi sudah kamu raih", "Room gagal dibuat. Coba lagi.", "Profil gagal dimuat.", "Menunggu lawan siap", "Tulis Notes kamu, lalu mulai saat Notes 2/2.", "Notes tersimpan", "Membuka room…", "Memuat Arena…", "Memuat hasil…", "Mode demo, poin tidak dicatat.".
 
 ## 3. Batasan mock
 

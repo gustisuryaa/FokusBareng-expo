@@ -1,6 +1,6 @@
 # Keputusan Aturan FokusBareng
 
-Versi 2.2, 23 November 2026. Menjawab pertanyaan hasil Tahap 0 Claude Code (lihat bagian 11).
+Versi 2.2, 23 November 2026. Menjawab pertanyaan hasil Tahap 0 pengembangan (lihat bagian 11).
 
 Penanda: **[USULAN]** dipakai sekarang, tapi nilainya hanya disimpan di `src/config/gameRules.js` karena belum masuk Charter/WBS. **[TERBUKA]** belum diputuskan, jangan dikodekan sebagai final.
 
@@ -145,7 +145,7 @@ Berlaku untuk `tests/referee.test.js` (fungsi murni) dan `tests/rules.test.js` (
 - **Room kedaluwarsa saat host menunggu:** Lobi host berganti ke M26, dengan tombol "Buat room baru".
 - **Lawan meninggalkan Lobi sebelum mulai:** `guestUid` tidak bisa dihapus. Lobi menampilkan chip presence lawan "Terputus". Host bisa menunggu atau membuat room baru. Tidak ada fitur mengeluarkan tamu.
 - **Wake Lock tidak didukung:** tampilkan Toast sekali di awal Arena, lalu battle tetap jalan. Teksnya di bagian 10.
-- **Tombol "Teman" dan "Belajar mandiri" di Dasbor tidak dirender di kode.** Kedua fitur itu hanya didesain (aturan keras 11), dan tombol yang tidak mengarah ke mana pun dilarang. Saat expo, keduanya ditunjukkan lewat prototype Figma.
+- **Tombol "Teman" dan "Belajar mandiri" di Dasbor tidak dirender di kode.** Kedua fitur itu hanya didesain (bagian 1), dan tombol yang tidak mengarah ke mana pun dilarang. Saat expo, keduanya ditunjukkan lewat prototype Figma.
 
 ## 8. Mode demo expo [USULAN]
 
@@ -180,7 +180,7 @@ Akun baru: 0 poin, gelar Teralihkan.
 
 ## 10. Teks yang belum ada di Figma [USULAN]
 
-Draf dari Claude. Gusti boleh mengganti kalimatnya, tapi strukturnya dipertahankan: judul hasil tetap memakai pola layar yang sudah ada (M16 · D11 untuk seri, M09 · D06 untuk menang), hanya baris penjelasnya yang berbeda.
+Draf usulan. Gusti boleh mengganti kalimatnya, tapi strukturnya dipertahankan: judul hasil tetap memakai pola layar yang sudah ada (M16 · D11 untuk seri, M09 · D06 untuk menang), hanya baris penjelasnya yang berbeda.
 
 | Kasus | Layar dasar | Baris penjelas |
 |---|---|---|
@@ -196,7 +196,7 @@ Istilah koneksi diseragamkan menjadi **"Terputus"** (bukan "Putus") di semua lay
 
 | No | Pertanyaan | Jawaban |
 |---|---|---|
-| 1 | Dokumen resmi | Gusti menaruh Charter, WBS v4, dan Catatan Perubahan di `docs/resmi/`. Sampai saat itu, lingkup mengikuti CLAUDE.md aturan 11. |
+| 1 | Dokumen resmi | Gusti menaruh Charter, WBS v4, dan Catatan Perubahan di `docs/resmi/`. Sampai saat itu, lingkup mengikuti bagian 1 dokumen ini. |
 | 2 | Notes | 140 karakter, wajib (bagian 2 langkah 5). |
 | 3 | Durasi dan "Buat room baru" | Durasi dipilih di Lobi. "Buat room baru" memakai durasi room sebelumnya (bagian 2). |
 | 4 | Siap, Mulai, Batal | `startRequested` = host menekan Mulai. `ready/{uid}` = "Aku siap" di Konfirmasi. Batal mengosongkan keduanya (bagian 2 langkah 6 sampai 8). |

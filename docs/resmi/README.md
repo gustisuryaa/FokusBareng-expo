@@ -7,4 +7,4 @@ Taruh di folder ini versi terbaru dari:
 - Jadwal
 - Catatan Perubahan (termasuk perubahan desktop masuk lingkup)
 
-Dokumen di folder ini menang atas semua file lain di `docs/` soal lingkup proyek (lihat CLAUDE.md).
+Dokumen di folder ini menang atas semua file lain di `docs/` soal lingkup proyek.

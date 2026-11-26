@@ -26,7 +26,7 @@ Status tes saat audit:
 |---|---|---|---|
 | 5 | Rules `battle`, `startRequested: true`, `ready`, dan `notes` tidak memeriksa `meta/expiresAt`. Klien (`getRoomStatus`) menganggap room kedaluwarsa. | Rules dan `referee.js` memutus berbeda, melanggar prinsip bagian 5 `keputusan-aturan.md`. | Tambah `now <= meta/expiresAt` di keempat path itu, plus tes. |
 | 6 | `result` tidak membatasi field tambahan. | Data sampah bisa ikut tersimpan di hasil. | Tambah validasi per field dan `$other: false`, seperti node lain. |
-| 7 | `useServerClock` membaca selisih jam server sekali saat komponen dipasang. Nilai awal `.info/serverTimeOffset` bisa 0 sebelum koneksi siap. | Timer dan jendela Check-In meleset sebesar selisih jam perangkat. Batas sinkron di aturan hanya 3 detik (aturan keras 5). | Perbarui offset secara berkala (atau dengarkan terus) selama komponen hidup. |
+| 7 | `useServerClock` membaca selisih jam server sekali saat komponen dipasang. Nilai awal `.info/serverTimeOffset` bisa 0 sebelum koneksi siap. | Timer dan jendela Check-In meleset sebesar selisih jam perangkat. Batas sinkron di aturan hanya 3 detik. | Perbarui offset secara berkala (atau dengarkan terus) selama komponen hidup. |
 | 8 | `signUp` tidak atomik: akun Auth sudah dibuat sebelum profil tersimpan. | Kalau penulisan profil gagal (sinyal expo jelek), `getProfile` melempar `not-found` dan Dasbor tidak bisa dimuat untuk akun itu selamanya. | Bila profil tidak ada tapi `displayName` ada, tulis ulang profil saat masuk. |
 | 9 | Rules tidak bisa mengulang data, jadi klaim `disconnect` atau `timeup` bisa diterima walau pemain sudah melewatkan Check-In lebih awal, asal tidak ada klien online yang mengklaim lebih dulu. | Hanya terjadi bila kedua klien tidak aktif di saat yang tepat. | Terima sebagai batasan MVP (sejalan dengan opsi A Check-In) dan tulis di dokumen. Tidak perlu kode. |
 
@@ -38,9 +38,9 @@ Status tes saat audit:
 | 11 | Layar room penuh (M27) di Firebase: `listenRoom` oleh non-peserta selalu ditolak, jadi nama pemain tidak tampil dan listener sia-sia. | Baca `meta/hostUid`, `guestUid`, lalu nama dari `users/{uid}/profile` (keduanya boleh dibaca). |
 | 12 | Poin Belajar Mandiri masih [TERBUKA]. | Tunggu angka kelompok. Rules `solo` sudah siap. |
 
-## Pertentangan dokumen (aturan keras 12)
+## Pertentangan dokumen
 
-- `keputusan-aturan.md` bagian 1 dan 7 masih menulis Belajar Mandiri "hanya didesain" dan tombolnya "tidak dirender". CLAUDE.md aturan 11 dan keputusan kelompok 24 Nov menyatakan sudah dikodekan. Dokumen resmi (Catatan Perubahan) belum menyusul.
+- `keputusan-aturan.md` bagian 1 dan 7 masih menulis Belajar Mandiri "hanya didesain" dan tombolnya "tidak dirender". Keputusan kelompok 24 Nov menyatakan sudah dikodekan. Dokumen resmi (Catatan Perubahan) belum menyusul.
 - `struktur-data.md` bagian 6 menulis rules "masih mengikuti v1". Rules sudah memuat semua butir 1 sampai 6; bagian ini perlu diganti status terbaru.
 
 ## Yang sudah dicek dan aman
