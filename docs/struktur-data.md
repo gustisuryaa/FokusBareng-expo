@@ -151,24 +151,26 @@ Galat memakai `ServiceError` dengan `code` yang sama untuk mock dan Firebase (`s
 
 Mock juga menyediakan panel dev untuk mensimulasikan lawan: bergabung, siap, terputus, kembali, melewatkan Check-In, dan keluar.
 
-## 5. Pemetaan ke ERD P19
+## 5. Pemetaan ke skema MySQL
+
+Skema MySQL versi 2 (`docs/erd/skema.md`, 26 Nov 2026) sudah disamakan dengan struktur ini. Pemetaan lengkapnya ada di skema.md bagian 5.
 
 | ERD | Realtime Database | Catatan |
 |---|---|---|
 | `pengguna(uid, nama, email, dibuat_pada)` | `users/{uid}/profile` | Email hanya disimpan di Firebase Auth |
 | `tier(id_tier, nama_tier, poin_minimum)` | `src/config/gameRules.js` | Konstanta, bukan data |
-| `room(id_room, kode_undangan, ...)` | `rooms/{roomId}/meta` | `kode_undangan` = `roomId` (lihat di bawah) |
+| `room(id_room, uid_pembuat, mode, durasi_menit, dibuat_pada, ...)` | `rooms/{roomId}/meta` | Tanpa kode undangan (lihat di bawah) |
 | `room.status` | dihitung (bagian 3) | Tidak disimpan supaya tidak bisa tidak sinkron |
 | `room.waktu_mulai` | `battle/startedAt` | |
-| `room.waktu_selesai` | `result/at` | |
+| `room.waktu_selesai`, `alasan_hasil` | `result/at`, `result/reason` | |
 | `peserta_room(id_room, uid, notes, siap)` | `meta.hostUid`, `guestUid`, `roomNotes/{roomId}/{uid}`, `ready/{uid}` | Notes dipisah supaya rahasia |
 | `peserta_room.hasil`, `poin_didapat` | `result` + `users/{uid}/history/{roomId}` | |
 | `check_in(id_room, urutan, waktu_jadwal)` | `battle/checkIns/{i}/offsetMs` | `waktu_jadwal = startedAt + offsetMs` |
-| `respons_check_in(id_check_in, uid, waktu_respons)` | `responses/{uid}/{i}` | |
-| (tidak ada) | `presence/{uid}` | Perlu ditambahkan ke ERD |
-| (tidak ada) | `result.reason` | Perlu ditambahkan ke ERD |
+| `respons_check_in(id_room, urutan, uid, waktu_respons)` | `responses/{uid}/{i}` | |
+| `sesi_mandiri(id_sesi, uid, teknik, menit_fokus, ...)` | `users/{uid}/solo/{id}` | |
+| (tidak ada) | `presence/{uid}`, `startRequested` | Status sementara, sengaja tidak dimodelkan |
 
-**Kode undangan:** ERD memakai `kode_undangan CHAR(6)`. Usulan di sini adalah memakai `roomId` dari push key Firebase (20 karakter) langsung di tautan, tanpa kode 6 karakter. Alasannya, kode 6 karakter bisa ditebak, sehingga orang asing bisa masuk ke room orang lain. Push key praktis tidak bisa ditebak. Konsekuensinya, room hanya bisa dimasuki lewat tautan, tidak dengan mengetik kode. **[TERBUKA]** Kalau tim tetap ingin kode yang bisa diketik, perlu node tambahan `inviteCodes/{kode}: roomId` dan rules-nya.
+**Kode undangan:** dihapus dari skema MySQL versi 2. Keputusannya adalah memakai `roomId` dari push key Firebase (20 karakter) langsung di tautan, tanpa kode 6 karakter. Alasannya, kode 6 karakter bisa ditebak, sehingga orang asing bisa masuk ke room orang lain. Push key praktis tidak bisa ditebak. Konsekuensinya, room hanya bisa dimasuki lewat tautan, tidak dengan mengetik kode.
 
 ## 6. Status rules
 
