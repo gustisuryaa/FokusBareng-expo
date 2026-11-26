@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: M12 dan D08 (fokus), M13 dan D08i (istirahat). Logika sesi: src/domain/solo.js.
 // Sesi dicatat ke database saat selesai, diakhiri, Check-In terlewat, atau halaman ditinggalkan.
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -166,7 +167,7 @@ onBeforeUnmount(() => {
 <template>
   <div v-if="session && segment" class="session">
     <header class="session__app-header only-desktop">
-      <p class="heading-24">FokusBareng</p>
+      <BrandLogo class="heading-24" />
       <p class="label-12 session__chip">BELAJAR MANDIRI · TANPA POIN</p>
     </header>
 

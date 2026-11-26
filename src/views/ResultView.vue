@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: Hasil menang M09·D06 (+ M09p·D06p lawan terputus), kalah M15·D10 (+ M19b·D14b keluar,
 // M25·D25 koneksi), popup Notes pemenang M15n·D10n·M19·D14·M25n·D25n, seri M16·D11. Versi tamu sama.
 // Teks hasil tambahan: keputusan-aturan.md bagian 10.
@@ -136,7 +137,7 @@ watch(winnerNotes, (text, previous) => {
 <template>
   <div v-if="result" class="result" :class="`result--${outcome}`">
     <header class="result__header">
-      <p class="heading-24 only-desktop">FokusBareng</p>
+      <BrandLogo class="heading-24 only-desktop" />
       <p class="label-12 result__chip">ROOM {{ roomTag(id) }} · {{ room.meta.durationMin }} MENIT</p>
     </header>
 

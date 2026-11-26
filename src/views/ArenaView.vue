@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: Arena M03·D03 (berjalan), M03b·D03b (menjelang akhir), M04·D03c (Check-In),
 // M14·D09 (Check-In habis), M18·D12 (konfirmasi keluar), putus sinyal M22·M22b·M23·D22·D23
 // (kamu) dan M17·M17b·M24·D13·D13b·D24 (lawan). Wasit: src/domain/referee.js.
@@ -270,7 +271,7 @@ const opponentName = computed(() => names[opponentUid.value] || 'lawan')
 <template>
   <div v-if="room?.battle" class="arena" :class="{ 'arena--ending': endingSoon }">
     <header class="arena__header only-desktop">
-      <p class="heading-24">FokusBareng</p>
+      <BrandLogo class="heading-24" />
       <p class="label-12 arena__chip">ROOM {{ roomTag(id) }} · {{ room.meta.durationMin }} MENIT</p>
     </header>
 

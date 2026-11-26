@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: M10 Belajar Mandiri, M11 Pemilihan Teknik, D07 keduanya dalam satu layar.
 // Di ponsel step menentukan bagian yang tampil; di desktop keduanya selalu tampil.
 import { computed, onMounted, ref } from 'vue'
@@ -63,7 +64,7 @@ onMounted(async () => {
 <template>
   <div class="solo" :class="`solo--${step}`">
     <header class="solo__app-header only-desktop">
-      <p class="heading-24">FokusBareng</p>
+      <BrandLogo class="heading-24" />
       <p class="label-12 solo__chip">BELAJAR MANDIRI · TANPA POIN</p>
     </header>
 

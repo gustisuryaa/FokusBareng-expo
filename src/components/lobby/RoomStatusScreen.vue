@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: Lobi gagal M26·D26 (tautan tidak berlaku) dan M27·D27 (room penuh)
 import AppButton from '@/components/ui/AppButton.vue'
 
@@ -15,7 +16,7 @@ defineEmits(['primary'])
 
 <template>
   <div class="room-status">
-    <p class="title-20 d-heading-24">FokusBareng</p>
+    <BrandLogo class="title-20 d-heading-24" />
     <main class="room-status__body">
       <p class="label-12 room-status__muted">{{ label }}</p>
       <h1 class="heading-28 d-heading-48">{{ title }}</h1>

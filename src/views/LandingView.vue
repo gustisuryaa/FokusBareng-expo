@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: Landing page v2 (section 165:236) > L01 desktop 1440, L02 mobile 390.
 // Halaman pertama untuk tamu. Pemain yang sudah masuk langsung diarahkan ke Dasbor oleh router.
 // Semua angka aturan dibaca dari gameRules.js supaya halaman ini ikut berubah bila angka [USULAN] diganti.
@@ -65,7 +66,7 @@ const techniques = SOLO_RULES.techniques.map((technique) => ({
 <template>
   <div class="landing">
     <header class="landing__nav">
-      <p class="title-20 d-heading-24">FokusBareng</p>
+      <BrandLogo class="title-20 d-heading-24" />
       <nav class="landing__nav-actions" aria-label="Navigasi utama">
         <ul class="landing__links only-desktop">
           <li><a href="#cara-main" class="body-14-semibold">Cara main</a></li>
@@ -218,7 +219,7 @@ const techniques = SOLO_RULES.techniques.map((technique) => ({
 
     <footer class="landing__footer">
       <div class="landing__footer-left">
-        <p class="title-20 d-heading-24">FokusBareng</p>
+        <BrandLogo class="title-20 d-heading-24" />
         <p class="caption-12-regular d-caption-13-regular landing__muted">Proyek MPTI dan PABW · Informatika UII · 2026</p>
       </div>
       <p class="caption-12-regular d-caption-13-regular landing__muted">Kelompok 6 · E-Duel</p>

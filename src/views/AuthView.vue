@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: Masuk M05·D04 (state f, l, v, x, j), Daftar M06·D05 (state f, v), Daftar gagal M07,
 // Masuk via undangan M08·D16. Satu view untuk Masuk dan Daftar, dipilih lewat prop mode.
 import { computed, nextTick, reactive, ref, watch } from 'vue'
@@ -108,7 +109,7 @@ const submitLabel = computed(() => {
   <div class="auth">
     <!-- Panel identitas, hanya desktop (D04 · D05 · D16) -->
     <aside class="auth__identity only-desktop" aria-hidden="true">
-      <p class="heading-24">FokusBareng</p>
+      <BrandLogo class="heading-24" />
       <div class="auth__identity-hero">
         <div class="versus versus--large">
           <span class="versus__self avatar-m">A</span>
@@ -132,7 +133,7 @@ const submitLabel = computed(() => {
 
     <main class="auth__main">
       <form class="auth__form" novalidate @submit.prevent="submit">
-        <p class="title-20 only-mobile">FokusBareng</p>
+        <BrandLogo class="title-20 only-mobile" />
 
         <InviteBanner v-if="inviteRoomId" :room-id="inviteRoomId" class="auth__banner" />
         <div v-else class="versus only-mobile" aria-hidden="true">

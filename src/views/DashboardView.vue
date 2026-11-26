@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: Dasbor M01·D01 (kosong), M01w/k/s·D01w/k/s (sesudah menang/kalah/seri, sisi tamu sama),
 // menu profil M01b·D01b, sheet Tangga gelar M01g.
 // Tombol Teman tidak dirender (keputusan-aturan.md bagian 7). Belajar mandiri masuk lingkup 24 Nov 2026.
@@ -77,7 +78,7 @@ onMounted(loadProfile)
 <template>
   <div class="dashboard">
     <header class="dashboard__header">
-      <p class="heading-24 only-desktop">FokusBareng</p>
+      <BrandLogo class="heading-24 only-desktop" />
       <div class="dashboard__header-actions">
         <p class="caption-12-semibold dashboard__points-chip only-desktop">{{ tier.points }} poin</p>
         <ProfileMenu :name="authStore.user?.name ?? ''" :email="authStore.user?.email" @sign-out="handleSignOut" />

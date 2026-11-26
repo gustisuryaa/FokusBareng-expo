@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Salinan statis D03 · Arena (berjalan) pada kanvas 1440 x 900, posisi mengikuti Figma.
 // Hanya untuk pratinjau di landing, jadi pakai kelas tipe dasar (tanpa varian d-*) agar tidak ikut berubah di breakpoint.
 defineProps({
@@ -15,7 +16,7 @@ const players = [
 <template>
   <div class="d03">
     <header class="d03__header">
-      <p class="heading-24">FokusBareng</p>
+      <BrandLogo class="heading-24" />
       <span class="d03__room label-12">ROOM #XXXX · 25 MENIT</span>
     </header>
 

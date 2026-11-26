@@ -1,4 +1,5 @@
 <script setup>
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 // Figma: Lobi host M02 (a, b, r, n, d, c, sh) · D02 (a, r, c), Lobi tamu M21 (r, n) · D21 (r),
 // Konfirmasi Kefokusan M20 · M20g · D15 · D20g, Lobi gagal M26 · M27 · D26 · D27.
 // Alur: keputusan-aturan.md bagian 2 langkah 1 sampai 9 dan tabel tautan room di bagian 7.
@@ -293,7 +294,7 @@ const fullDescription = computed(() => {
   <div v-else-if="entry === 'lobby' && room" class="lobby">
     <!-- Header desktop -->
     <header class="lobby__app-header only-desktop">
-      <p class="heading-24">FokusBareng</p>
+      <BrandLogo class="heading-24" />
       <div class="lobby__app-header-right">
         <p class="caption-12-semibold lobby__chip">{{ myPoints }} poin</p>
         <p class="lobby__chip lobby__chip--profile">
