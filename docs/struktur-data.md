@@ -153,7 +153,7 @@ Mock juga menyediakan panel dev untuk mensimulasikan lawan: bergabung, siap, ter
 
 ## 5. Pemetaan ke skema MySQL
 
-Skema MySQL versi 2 (`docs/erd/skema.md`, 26 Nov 2026) sudah disamakan dengan struktur ini. Pemetaan lengkapnya ada di skema.md bagian 5.
+Skema MySQL versi 2 (`docs/erd/v2/skema.md`, 26 Nov 2026) sudah disamakan dengan struktur ini. Pemetaan lengkapnya ada di skema.md bagian 5.
 
 | ERD | Realtime Database | Catatan |
 |---|---|---|
