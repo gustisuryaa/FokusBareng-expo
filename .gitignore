@@ -8,3 +8,9 @@ dist
 .DS_Store
 .vite
 .firebase
+echo "Claude outputs/" >> .gitignore
+# Berkas kerja lokal, tidak di-push
+CLAUDE.md
+.claude/
+Claude outputs/
+docs/prompt-claude-code-frontend.md
