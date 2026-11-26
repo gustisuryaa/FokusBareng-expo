@@ -31,7 +31,7 @@ const guestDuration = ref(NORMAL_RULES.defaultDurationMin)
 const durationSheetOpen = ref(false)
 const exitDialogOpen = ref(false)
 
-const tierSizes = [14, 16, 20, 22, 28]
+const tierSizes = [20, 22, 24, 28, 32, 40, 56]
 </script>
 
 <template>

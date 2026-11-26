@@ -104,15 +104,15 @@ onMounted(loadProfile)
             <span class="label-12 dashboard__muted">POIN</span>
           </TierRing>
           <span id="tier-title" class="dashboard__tier-name">
-            <TierBadge :tier="tier.current.id" :size="isDesktop ? 28 : 22" />
+            <TierBadge :tier="tier.current.id" :size="isDesktop ? 32 : 24" />
             <span class="heading-28 d-heading-40">{{ tier.current.name }}</span>
           </span>
           <span class="dashboard__next body-14-regular d-body-16-regular">
-            <span class="dashboard__muted">{{ nextTierText }}</span>
-            <template v-if="tier.next">
-              <TierBadge :tier="tier.next.id" :achieved="tier.next.id !== 'jawara'" :size="isDesktop ? 16 : 14" />
+            <span class="dashboard__muted dashboard__nowrap">{{ nextTierText }}</span>
+            <span v-if="tier.next" class="dashboard__next-tier">
+              <TierBadge :tier="tier.next.id" :size="isDesktop ? 22 : 20" />
               <span class="body-14-semibold d-body-16-semibold dashboard__accent">{{ tier.next.name }}</span>
-            </template>
+            </span>
             <AppIcon v-if="!isDesktop" name="chev" class="dashboard__muted" />
           </span>
         </component>
@@ -276,8 +276,22 @@ onMounted(loadProfile)
   gap: var(--space-8);
 }
 
+/* Di layar sempit lencana dan nama gelar turun bersama, kalimatnya tidak terpotong di tengah */
 .dashboard__next {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4) var(--space-8);
+}
+
+.dashboard__nowrap {
+  white-space: nowrap;
+}
+
+.dashboard__next-tier {
+  display: inline-flex;
+  align-items: center;
   gap: var(--space-4);
+  white-space: nowrap;
 }
 
 .dashboard__record {

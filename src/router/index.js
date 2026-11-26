@@ -3,6 +3,13 @@ import { isSignedIn, waitForAuth } from '@/stores/authStore'
 
 const routes = [
   {
+    // Halaman pertama untuk tamu (Figma: Landing page v2, L01/L02). Pemain yang sudah masuk diarahkan ke Dasbor.
+    path: '/',
+    name: 'landing',
+    component: () => import('@/views/LandingView.vue'),
+    meta: { guestOnly: true },
+  },
+  {
     path: '/masuk',
     name: 'login',
     component: () => import('@/views/AuthView.vue'),
@@ -17,7 +24,7 @@ const routes = [
     meta: { guestOnly: true },
   },
   {
-    path: '/',
+    path: '/dasbor',
     name: 'dashboard',
     component: () => import('@/views/DashboardView.vue'),
     meta: { requiresAuth: true },
@@ -85,6 +92,13 @@ routes.push({ path: '/:pathMatch(.*)*', redirect: '/' })
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+  // Tautan #cara-main dan sejenisnya di landing. Pindah halaman mulai dari atas, Back kembali ke posisi lama.
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) return { el: to.hash, behavior: 'smooth' }
+    if (savedPosition) return savedPosition
+    if (to.path !== from.path) return { top: 0 }
+    return undefined
+  },
 })
 
 // Hanya terima tujuan internal supaya ?redirect tidak bisa dipakai ke situs lain
@@ -92,7 +106,7 @@ export function safeRedirect(value) {
   if (typeof value === 'string' && value.startsWith('/') && !value.startsWith('//')) {
     return value
   }
-  return '/'
+  return '/dasbor'
 }
 
 router.beforeEach(async (to) => {
