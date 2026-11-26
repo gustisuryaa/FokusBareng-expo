@@ -428,6 +428,12 @@ export function listenRoom(roomId, callback) {
   }
 }
 
+// Status socket ke server Firebase, bukan status jaringan peramban.
+// Nilai awal false sebelum tersambung pertama kali.
+export function onConnectionChange(callback) {
+  return onValue(ref(db(), '.info/connected'), (snapshot) => callback(snapshot.val() === true))
+}
+
 // .info hanya bisa didengar, tidak bisa dibaca dengan get()
 export function getServerOffset() {
   return new Promise((resolve) => {

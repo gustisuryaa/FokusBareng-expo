@@ -11,6 +11,7 @@ import PresenceChip from '@/components/arena/PresenceChip.vue'
 import TimerRing from '@/components/arena/TimerRing.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import SheetDialog from '@/components/ui/SheetDialog.vue'
+import { useConnection } from '@/composables/useConnection'
 import { usePlayerNames } from '@/composables/usePlayerNames'
 import { usePresence } from '@/composables/usePresence'
 import { useServerClock } from '@/composables/useServerClock'
@@ -26,7 +27,7 @@ import {
   isEndingSoon,
 } from '@/domain/referee'
 import { roomTag } from '@/lib/roomLabel'
-import { answerCheckIn, claimResult, forfeit, listenRoom } from '@/services'
+import { ERROR_CODES, answerCheckIn, claimResult, forfeit, listenRoom } from '@/services'
 import { authStore } from '@/stores/authStore'
 
 const props = defineProps({
@@ -37,6 +38,7 @@ const route = useRoute()
 const router = useRouter()
 const { now } = useServerClock()
 const presence = usePresence()
+const { connected } = useConnection()
 const { names, load: loadName } = usePlayerNames()
 
 const uid = authStore.user.uid
@@ -91,20 +93,21 @@ const trailSummary = computed(() => {
 
 // ---------- Koneksi ----------
 
-// Koneksi sendiri dilihat dari peramban (offline/online); lawan dari presence di database
+// Koneksi sendiri dilihat dari sambungan ke database (bukan status jaringan peramban); lawan dari presence
 const selfOfflineSince = ref(null)
 const selfReconnectedAt = ref(null)
 const opponentReconnectedAt = ref(null)
 const NOTICE_MS = 3000 // lama pesan "tersambung lagi" tampil
 
 // Dicatat dengan jam yang sama (now) supaya hitung mundur ikut diperbarui tiap tick
-function onOffline() {
-  selfOfflineSince.value = now.value
-}
-function onOnline() {
+watch(connected, (online) => {
+  if (!online) {
+    selfOfflineSince.value = now.value
+    return
+  }
   if (selfOfflineSince.value !== null) selfReconnectedAt.value = now.value
   selfOfflineSince.value = null
-}
+})
 
 const selfSecondsLeft = computed(() =>
   selfOfflineSince.value === null ? 0 : Math.max(0, Math.ceil((selfOfflineSince.value + toleranceMs.value - now.value) / 1000)),
@@ -166,17 +169,21 @@ function goToResult() {
 
 // ---------- Wasit di klien: klaim hasil saat kondisi akhir terpenuhi ----------
 
+// Klaim yang ditolak rules dicoba lagi setelah jeda, bukan di setiap tick
+const CLAIM_RETRY_MS = 2000
 let claiming = false
+let nextClaimAt = 0
 watch(now, async (time) => {
   const current = room.value
-  if (!current?.battle || current.result || claiming) return
+  if (!current?.battle || current.result || claiming || time < nextClaimAt) return
   const verdict = evaluateBattle(current, time)
   if (!verdict) return
   claiming = true
   try {
     await claimResult(props.id, verdict)
-  } catch {
-    // Klien lain sudah menulis hasil lebih dulu: diabaikan
+  } catch (error) {
+    // ALREADY_EXISTS: klien lain sudah menulis hasil, tinggal menunggu listener
+    if (error?.code !== ERROR_CODES.ALREADY_EXISTS) nextClaimAt = time + CLAIM_RETRY_MS
   } finally {
     claiming = false
   }
@@ -248,8 +255,6 @@ onMounted(() => {
     loadName(value.guestUid)
   })
   presence.start(props.id)
-  window.addEventListener('offline', onOffline)
-  window.addEventListener('online', onOnline)
   window.addEventListener('beforeunload', onBeforeUnload)
   document.addEventListener('visibilitychange', onVisibility)
   requestWakeLock()
@@ -257,8 +262,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   stopListening?.()
-  window.removeEventListener('offline', onOffline)
-  window.removeEventListener('online', onOnline)
   window.removeEventListener('beforeunload', onBeforeUnload)
   document.removeEventListener('visibilitychange', onVisibility)
   wakeLock?.release?.().catch(() => {})

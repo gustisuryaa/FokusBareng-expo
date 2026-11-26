@@ -152,6 +152,22 @@ export async function listSoloSessions() {
 }
 
 // Jam mock sama dengan jam perangkat
+// Mock tidak punya socket: status jaringan peramban dipakai (bisa diuji lewat DevTools Offline)
+export function onConnectionChange(callback) {
+  if (typeof window === 'undefined') {
+    callback(true)
+    return () => {}
+  }
+  const report = () => callback(navigator.onLine)
+  report()
+  window.addEventListener('online', report)
+  window.addEventListener('offline', report)
+  return () => {
+    window.removeEventListener('online', report)
+    window.removeEventListener('offline', report)
+  }
+}
+
 export async function getServerOffset() {
   return 0
 }

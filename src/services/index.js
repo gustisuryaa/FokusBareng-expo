@@ -28,6 +28,7 @@ export const {
   applyPoints,
   listenRoom,
   getServerOffset,
+  onConnectionChange,
   saveSoloSession,
   listSoloSessions,
 } = services

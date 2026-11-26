@@ -184,6 +184,36 @@ describe.skipIf(!hasEmulator)('services Firebase (emulator)', () => {
     await expect(services.getProfile('uid-tidak-ada')).rejects.toMatchObject({ code: ERROR_CODES.NOT_FOUND })
   })
 
+  // Pola usePresence: setelah socket putus, onDisconnect sudah menulis offline,
+  // jadi presence harus ditulis ulang saat tersambung lagi
+  it('presence kembali online setelah sambungan pulih', async () => {
+    await as(emailA)
+    const { firebase } = await import('../src/services/firebase/app.js')
+    const { get, goOffline, goOnline, ref } = await import('firebase/database')
+    const { db } = firebase()
+    const presenceRoom = await services.createRoom({})
+    const presencePath = ref(db, `rooms/${presenceRoom}/presence/${uidA}`)
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+    const states = []
+    const stop = services.onConnectionChange((online) => {
+      states.push(online)
+      if (online) services.setPresence(presenceRoom, true).catch(() => {})
+    })
+    await wait(300)
+    expect((await get(presencePath)).val()).toMatchObject({ online: true })
+
+    goOffline(db)
+    await wait(300)
+    goOnline(db)
+    await wait(1000)
+    stop()
+
+    expect(states).toContain(false)
+    expect(states.at(-1)).toBe(true)
+    expect((await get(presencePath)).val()).toMatchObject({ online: true })
+  })
+
   it('selisih jam server berupa angka', async () => {
     expect(typeof (await services.getServerOffset())).toBe('number')
   })
