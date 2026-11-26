@@ -63,7 +63,7 @@ const marker = computed(() => {
   return (Math.min(now.value, position.value.endAt) - startedAt) / (position.value.endAt - startedAt)
 })
 
-// ---------- Check-In ----------
+// Check-In
 
 const active = computed(() => (session.value && !ended.value ? getActiveCheckIn(session.value, now.value) : null))
 // Nomor Check-In sepanjang sesi, mulai dari 1
@@ -78,7 +78,7 @@ function handleAnswer() {
   update(answerCheckIn(session.value, active.value.key))
 }
 
-// ---------- Mengubah dan mengakhiri sesi ----------
+// Mengubah dan mengakhiri sesi
 
 function update(next) {
   session.value = next
@@ -135,7 +135,7 @@ onBeforeRouteLeave(() => {
   return true
 })
 
-// ---------- Layar tetap menyala ----------
+// Layar tetap menyala
 
 let wakeLock = null
 async function requestWakeLock() {

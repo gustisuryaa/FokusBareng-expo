@@ -1,9 +1,8 @@
 <script setup>
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
-// Pola dari Figma: sheet bawah di ponsel (Sheet/Durasi, Sheet/Tangga gelar 133:284,
-// Alertdialog/Check-In 135:436) dan dialog tengah di desktop (Alertdialog/Keluar Arena 95:468).
-// Satu komponen, bentuknya diatur lewat CSS di breakpoint 1024 px.
+// Sheet bawah di ponsel (Figma 133:284, 135:436), dialog tengah di desktop (95:468).
+// Bentuknya diatur lewat CSS di breakpoint 1024 px.
 const props = defineProps({
   open: { type: Boolean, default: false },
   // id elemen judul di dalam slot, wajib supaya pembaca layar tahu nama dialognya

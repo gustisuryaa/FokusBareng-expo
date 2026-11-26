@@ -1,8 +1,7 @@
 <script setup>
 import BrandLogo from '@/components/ui/BrandLogo.vue'
-// Figma: Hasil menang M09·D06 (+ M09p·D06p lawan terputus), kalah M15·D10 (+ M19b·D14b keluar,
-// M25·D25 koneksi), popup Notes pemenang M15n·D10n·M19·D14·M25n·D25n, seri M16·D11. Versi tamu sama.
-// Teks hasil tambahan: keputusan-aturan.md bagian 10.
+// Figma: menang M09·D06 (+ M09p·D06p), kalah M15·D10 (+ M19b·D14b, M25·D25), seri M16·D11, versi tamu sama.
+// Popup Notes pemenang M15n·D10n·M19·D14·M25n·D25n; teks tambahan di keputusan-aturan.md bagian 10.
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import TierBadge from '@/components/profile/TierBadge.vue'

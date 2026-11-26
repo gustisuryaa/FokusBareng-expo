@@ -2,9 +2,8 @@
 import { computed } from 'vue'
 import { TIERS } from '@/config/gameRules'
 
-// Figma: Lencana v3/A+ Garis fokus (komponen 176:245). Perhatian yang berserakan makin terkumpul:
-// garis menebal tiap naik gelar, lencana duduk di wadah berwarna, hanya Jawara yang berbingkai.
-// Teralihkan selalu abu. Gelar lain amber (Jawara biru) bila tercapai, abu bila belum.
+// Figma: Lencana v3/A+ Garis fokus (176:245). Garis menebal tiap naik gelar, hanya Jawara berbingkai.
+// Teralihkan selalu abu; gelar lain amber (Jawara biru) bila tercapai, abu bila belum.
 const props = defineProps({
   tier: {
     type: String,

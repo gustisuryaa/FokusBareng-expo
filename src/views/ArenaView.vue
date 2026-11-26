@@ -1,8 +1,7 @@
 <script setup>
 import BrandLogo from '@/components/ui/BrandLogo.vue'
-// Figma: Arena M03·D03 (berjalan), M03b·D03b (menjelang akhir), M04·D03c (Check-In),
-// M14·D09 (Check-In habis), M18·D12 (konfirmasi keluar), putus sinyal M22·M22b·M23·D22·D23
-// (kamu) dan M17·M17b·M24·D13·D13b·D24 (lawan). Wasit: src/domain/referee.js.
+// Figma: Arena M03·D03, menjelang akhir M03b·D03b, Check-In M04·D03c, habis M14·D09, keluar M18·D12.
+// Putus sinyal kamu M22·M22b·M23·D22·D23, lawan M17·M17b·M24·D13·D13b·D24. Wasit: src/domain/referee.js.
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import CheckInDialog from '@/components/arena/CheckInDialog.vue'
@@ -48,7 +47,7 @@ const exitOpen = ref(false)
 const leaving = ref(false)
 const queryKeep = computed(() => (route.query.mode ? { mode: route.query.mode } : {}))
 
-// ---------- Turunan ----------
+// Turunan
 
 const rules = computed(() => getRoomRules(room.value))
 const opponentUid = computed(() => (room.value ? getOpponentUid(room.value, uid) : null))
@@ -91,7 +90,7 @@ const trailSummary = computed(() => {
   return { text: `${marks.value.length} dijawab berdua`, tone: marks.value.length ? 'success' : 'muted' }
 })
 
-// ---------- Koneksi ----------
+// Koneksi
 
 // Koneksi sendiri dilihat dari sambungan ke database (bukan status jaringan peramban); lawan dari presence
 const selfOfflineSince = ref(null)
@@ -144,7 +143,7 @@ const helper = computed(() => {
   return null
 })
 
-// ---------- Check-In ----------
+// Check-In
 
 const missedIndex = ref(null)
 const checkInOpen = computed(() => missedIndex.value !== null || Boolean(active.value && !iAnsweredActive.value && !room.value?.result))
@@ -167,7 +166,7 @@ function goToResult() {
   router.replace({ name: 'result', params: { id: props.id }, query: queryKeep.value })
 }
 
-// ---------- Wasit di klien: klaim hasil saat kondisi akhir terpenuhi ----------
+// Wasit di klien: klaim hasil saat kondisi akhir terpenuhi
 
 // Klaim yang ditolak rules dicoba lagi setelah jeda, bukan di setiap tick
 const CLAIM_RETRY_MS = 2000
@@ -202,7 +201,7 @@ watch(
   },
 )
 
-// ---------- Keluar ----------
+// Keluar
 
 async function confirmForfeit() {
   try {
@@ -225,7 +224,7 @@ function onBeforeUnload(event) {
   }
 }
 
-// ---------- Layar tetap menyala ----------
+// Layar tetap menyala
 
 let wakeLock = null
 async function requestWakeLock() {
@@ -243,7 +242,7 @@ function onVisibility() {
   if (document.visibilityState === 'visible' && wakeLock?.released !== false) requestWakeLock()
 }
 
-// ---------- Siklus hidup ----------
+// Siklus hidup
 
 let stopListening = null
 onMounted(() => {

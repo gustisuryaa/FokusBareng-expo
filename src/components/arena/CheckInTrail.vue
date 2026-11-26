@@ -1,7 +1,6 @@
 <script setup>
-// Figma: Jejak Check-In (6.13 di design md; M03 135:422, D03c 39:757).
-// Jalur sepanjang battle, isi abu = waktu berlalu, penanda hijau = dijawab berdua,
-// merah = ada yang melewatkan, titik amber = posisi sekarang.
+// Figma: Jejak Check-In (M03 135:422, D03c 39:757). Abu = waktu berlalu, amber = posisi sekarang,
+// hijau = dijawab berdua, merah = ada yang melewatkan.
 import { computed } from 'vue'
 
 const props = defineProps({

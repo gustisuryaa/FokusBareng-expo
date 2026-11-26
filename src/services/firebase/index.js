@@ -1,6 +1,5 @@
-// Implementasi Firebase dari kontrak services (struktur-data.md bagian 4).
-// Bentuk data persis sama dengan mock. Pemeriksaan di sini memakai fungsi wasit yang sama
-// dengan mock supaya pesan galat seragam; penjaga sebenarnya tetap database.rules.json.
+// Kontrak services (struktur-data.md bagian 4) di atas Firebase, bentuk data sama dengan mock.
+// Pemeriksaan di sini hanya untuk pesan galat; penjaga sebenarnya database.rules.json.
 
 import {
   createUserWithEmailAndPassword,
@@ -34,7 +33,7 @@ import { summarizeHistory } from '../../domain/profile.js'
 import { ERROR_CODES, ServiceError } from '../errors.js'
 import { firebase, getOffsetMs, serverNow } from './app.js'
 
-// ---------- galat ----------
+// Galat
 
 const AUTH_CREDENTIAL_CODES = new Set([
   'auth/invalid-credential',
@@ -74,7 +73,7 @@ function fail(code, message) {
   throw new ServiceError(code, message)
 }
 
-// ---------- helper ----------
+// Helper
 
 function db() {
   return firebase().db
@@ -108,7 +107,7 @@ function requireLobby(room) {
   if (!isLobbyEditable(room, serverNow())) fail(ERROR_CODES.PERMISSION_DENIED, 'Battle sudah dimulai atau room tidak berlaku.')
 }
 
-// ---------- auth ----------
+// Auth
 
 const authCallbacks = new Set()
 
@@ -166,7 +165,7 @@ export function onAuthChange(callback) {
   }
 }
 
-// ---------- profil ----------
+// Profil
 
 // Daftar membuat akun Auth dulu, baru profil. Bila profil gagal tersimpan (misalnya sinyal putus),
 // profil milik sendiri ditulis ulang dari displayName supaya Dasbor tetap bisa dimuat.
@@ -188,7 +187,7 @@ export const getProfile = guarded(async (uid) => {
   return { ...profile.val(), ...summarizeHistory(history) }
 })
 
-// ---------- room ----------
+// Room
 
 // Sama dengan mock: room demo selalu memakai durasi demo dan menyimpan meta.mode
 export const createRoom = guarded(async ({ durationMin, mode } = {}) => {
@@ -363,7 +362,7 @@ export const applyPoints = guarded(async (roomId) => {
   return entry
 })
 
-// ---------- Belajar Mandiri ----------
+// Belajar Mandiri
 
 // [USULAN] users/{uid}/solo/{sessionId}, lihat docs/usulan-firebase-v1.3.md bagian 4
 export const saveSoloSession = guarded(async (entry) => {
@@ -379,10 +378,8 @@ export const listSoloSessions = guarded(async () => {
   return snapshot.val() ?? {}
 })
 
-// Room hilang dikabarkan sebagai null, seperti mock. Bukan peserta ditolak rules membaca seluruh room,
-// jadi ia menerima meta dan guestUid saja (untuk nama di layar room penuh).
-// Notes tinggal di roomNotes: Notes sendiri didengarkan terus, Notes pemenang dibaca sekali setelah
-// hasil ada. Keduanya digabung ke room.notes supaya layar sama dengan mock.
+// Room hilang dikabarkan null; bukan peserta hanya menerima meta dan guestUid.
+// room.notes digabung dari roomNotes: milik sendiri didengarkan, milik pemenang dibaca sekali setelah hasil.
 export function listenRoom(roomId, callback) {
   const uid = firebase().auth.currentUser?.uid ?? null
   let active = true

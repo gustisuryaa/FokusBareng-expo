@@ -1,8 +1,7 @@
 <script setup>
 import BrandLogo from '@/components/ui/BrandLogo.vue'
-// Figma: Landing page v2 (section 165:236) > L01 desktop 1440, L02 mobile 390.
-// Halaman pertama untuk tamu. Pemain yang sudah masuk langsung diarahkan ke Dasbor oleh router.
-// Semua angka aturan dibaca dari gameRules.js supaya halaman ini ikut berubah bila angka [USULAN] diganti.
+// Figma: Landing page v2 (165:236), L01 desktop 1440, L02 mobile 390. Pengguna yang sudah masuk diarahkan router ke Dasbor.
+// Angka aturan dibaca dari gameRules.js supaya ikut berubah bila angka [USULAN] diganti.
 import { computed } from 'vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import ArenaPreview from '@/components/landing/ArenaPreview.vue'

@@ -1,10 +1,8 @@
 import { onBeforeUnmount } from 'vue'
 import { onConnectionChange, setPresence } from '@/services'
 
-// Presence pemain di room: online saat halaman terlihat, offline saat tab disembunyikan,
-// ditutup, atau komponen dilepas. Firebase menambahkan onDisconnect di setPresence.
-// Setelah sambungan putus, server sudah menulis offline dan onDisconnect habis terpakai,
-// jadi presence ditulis ulang setiap kali tersambung lagi.
+// Online saat tab terlihat, offline saat tab disembunyikan, ditutup, atau komponen dilepas.
+// Ditulis ulang setiap tersambung lagi, karena onDisconnect habis terpakai saat sambungan putus.
 export function usePresence() {
   let roomId = null
   let stopConnection = null

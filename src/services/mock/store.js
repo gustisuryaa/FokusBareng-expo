@@ -1,7 +1,5 @@
-// Penyimpanan mock: satu objek db berbentuk sama dengan Realtime Database
-// (struktur-data.md bagian 1), disimpan di localStorage supaya bertahan saat refresh
-// dan terbagi antar tab. Sesi masuk disimpan per tab di sessionStorage,
-// jadi dua tab bisa menjadi dua pemain berbeda.
+// Db mock berbentuk sama dengan Realtime Database, disimpan di localStorage supaya terbagi antar tab.
+// Sesi masuk disimpan per tab di sessionStorage, jadi dua tab bisa menjadi dua pemain.
 
 const DB_KEY = 'fokusbareng:mock-db'
 const SESSION_KEY = 'fokusbareng:mock-session'

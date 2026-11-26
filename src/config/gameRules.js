@@ -1,5 +1,4 @@
-// Angka aturan main FokusBareng. Sumber: docs/keputusan-aturan.md bagian 3, 8, dan 9.
-// Semua nilai di file ini berstatus [USULAN]: belum masuk Charter/WBS, jadi hanya disimpan di sini.
+// Angka aturan main (keputusan-aturan.md bagian 3, 8, 9), semuanya [USULAN] dan hanya disimpan di sini.
 // Komponen dan logika lain tidak boleh menulis angka aturan sendiri.
 
 const SECOND = 1000

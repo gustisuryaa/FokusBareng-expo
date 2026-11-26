@@ -1,7 +1,6 @@
 <script setup>
-// Figma: Landing page v2 > Visual produk. Layar Arena D03 dengan ponsel M04 di depannya (L01), ponsel saja di layar sempit (L02).
-// Diputar sekali saat halaman dibuka: timer turun ke 12:30, sheet Check-In naik, hitung mundur berhenti di 17.
-// Dengan "kurangi gerakan" langsung tampil keadaan akhir.
+// Figma Landing v2 > Visual produk: Arena D03 dengan ponsel M04 (L01), ponsel saja di layar sempit (L02).
+// Animasi diputar sekali; dengan "kurangi gerakan" langsung tampil keadaan akhir.
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import ScaledFrame from '@/components/landing/ScaledFrame.vue'
 import ArenaScreenDesktop from '@/components/landing/ArenaScreenDesktop.vue'

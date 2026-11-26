@@ -1,8 +1,7 @@
 <script setup>
 import BrandLogo from '@/components/ui/BrandLogo.vue'
-// Figma: Dasbor M01·D01 (kosong), M01w/k/s·D01w/k/s (sesudah menang/kalah/seri, sisi tamu sama),
-// menu profil M01b·D01b, sheet Tangga gelar M01g.
-// Tombol Teman tidak dirender (keputusan-aturan.md bagian 7). Belajar mandiri masuk lingkup 24 Nov 2026.
+// Figma: Dasbor M01·D01, sesudah menang/kalah/seri M01w/k/s·D01w/k/s, menu profil M01b·D01b, Tangga gelar M01g.
+// Tombol Teman tidak dirender (keputusan-aturan.md bagian 7).
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ProfileMenu from '@/components/layout/ProfileMenu.vue'

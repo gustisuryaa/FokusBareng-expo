@@ -25,7 +25,7 @@ function normalizeEmail(email) {
   return String(email ?? '').trim().toLowerCase()
 }
 
-// ---------- auth ----------
+// Auth
 
 export async function signUp({ name, email, password }) {
   const cleanName = String(name ?? '').trim()
@@ -70,13 +70,13 @@ export function onAuthChange(callback) {
   return addAuthListener(callback)
 }
 
-// ---------- profil ----------
+// Profil
 
 export async function getProfile(uid) {
   return ops.getProfile(uid)
 }
 
-// ---------- room ----------
+// Room
 
 export async function createRoom(options) {
   return ops.createRoom(requireUid(), options)
@@ -141,7 +141,7 @@ export function listenRoom(roomId, callback) {
   return addRoomListener(roomId, send)
 }
 
-// ---------- Belajar Mandiri ----------
+// Belajar Mandiri
 
 export async function saveSoloSession(entry) {
   return ops.saveSoloSession(requireUid(), entry)

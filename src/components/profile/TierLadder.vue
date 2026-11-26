@@ -1,7 +1,5 @@
 <script setup>
-// Tangga gelar dalam dua bentuk dari Figma:
-// list  = sheet Tangga gelar mobile (133:288), baris per gelar
-// track = panel Tangga gelar desktop (99:444), titik di satu garis
+// Tangga gelar: list = sheet mobile (Figma 133:288), track = panel desktop dengan titik di satu garis (99:444).
 import { TIERS } from '@/config/gameRules'
 import TierBadge from './TierBadge.vue'
 

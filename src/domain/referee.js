@@ -1,7 +1,5 @@
-// Wasit FokusBareng: fungsi murni tanpa Firebase, tanpa Vue, tanpa Date.now().
-// Semua waktu yang masuk ke sini adalah waktu server (ms). Aturannya mengikuti
-// docs/keputusan-aturan.md bagian 4, angkanya dari src/config/gameRules.js.
-// Dipakai oleh mock service, klien Firebase, dan tes. Rules Firebase harus memutus hal yang sama.
+// Wasit murni tanpa Firebase, Vue, atau Date.now(); semua waktu yang masuk adalah waktu server (ms).
+// Aturan dari keputusan-aturan.md bagian 4, angka dari gameRules.js. Rules Firebase harus memutus hal yang sama.
 
 import { getRules } from '../config/gameRules.js'
 
@@ -64,7 +62,7 @@ export function resolveRoomEntry(room, uid, now) {
   return { route: ROOM_ROUTE.FULL, join: false }
 }
 
-// ---------- Lobi ----------
+// Lobi
 
 export function validateNotes(text, rules = getRules()) {
   if (typeof text !== 'string') return false
@@ -94,9 +92,8 @@ export function canStartBattle(room) {
   return getPlayers(room).every((uid) => room.ready?.[uid] === true)
 }
 
-// Jadwal Check-In (opsi A: ditulis sekali saat battle mulai).
-// Pertama: firstAtMs + acak(0..rentang interval). Berikutnya: + acak(intervalMin..intervalMax).
-// Tidak ada Check-In di quietEndMs terakhir. random disuntik supaya bisa dites.
+// Jadwal ditulis sekali saat battle mulai: pertama firstAtMs + acak(rentang), lalu + acak(intervalMin..intervalMax).
+// Tidak ada Check-In di quietEndMs terakhir; random disuntik supaya bisa dites.
 export function generateCheckInSchedule(durationMin, rules, random = Math.random) {
   const { firstAtMs, intervalMinMs, intervalMaxMs, quietEndMs } = rules.checkIn
   const spread = intervalMaxMs - intervalMinMs
@@ -114,7 +111,7 @@ export function generateCheckInSchedule(durationMin, rules, random = Math.random
   return schedule
 }
 
-// ---------- Arena ----------
+// Arena
 
 export function getBattleEnd(room) {
   return room.battle.startedAt + room.meta.durationMin * 60_000
@@ -262,7 +259,7 @@ export function isClaimValid(room, claim, now) {
   return keys.every((key) => expected[key] === claim[key])
 }
 
-// ---------- Hasil, Notes, poin ----------
+// Hasil, Notes, poin
 
 export function getOutcomeFor(room, uid) {
   const result = room?.result

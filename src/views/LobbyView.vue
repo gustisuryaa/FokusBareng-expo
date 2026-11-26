@@ -1,8 +1,7 @@
 <script setup>
 import BrandLogo from '@/components/ui/BrandLogo.vue'
-// Figma: Lobi host M02 (a, b, r, n, d, c, sh) · D02 (a, r, c), Lobi tamu M21 (r, n) · D21 (r),
-// Konfirmasi Kefokusan M20 · M20g · D15 · D20g, Lobi gagal M26 · M27 · D26 · D27.
-// Alur: keputusan-aturan.md bagian 2 langkah 1 sampai 9 dan tabel tautan room di bagian 7.
+// Figma: Lobi host M02 (a, b, r, n, d, c, sh) · D02 (a, r, c), tamu M21 (r, n) · D21 (r).
+// Konfirmasi M20 · M20g · D15 · D20g, gagal M26 · M27 · D26 · D27. Alur: keputusan-aturan.md bagian 2 dan 7.
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import FocusConfirm from '@/components/lobby/FocusConfirm.vue'
@@ -63,7 +62,7 @@ const room = ref(null)
 const myPoints = ref(0)
 const busy = ref(false)
 
-// ---------- Data turunan ----------
+// Data turunan
 
 const status = computed(() => (room.value ? getRoomStatus(room.value, now.value) : null))
 const rules = computed(() => getRoomRules(room.value))
@@ -125,7 +124,7 @@ const canStart = computed(() => isHost.value && room.value && canRequestStart(ro
 const confirmOpen = computed(() => room.value?.startRequested === true && !room.value.battle)
 const iConfirmed = computed(() => room.value?.ready?.[uid] === true)
 
-// ---------- Aksi ----------
+// Aksi
 
 async function run(action, failMessage) {
   if (busy.value) return false
@@ -201,7 +200,7 @@ async function createOwnRoom() {
   }, 'Room gagal dibuat. Coba lagi.')
 }
 
-// ---------- Siklus hidup ----------
+// Siklus hidup
 
 let stopListening = null
 

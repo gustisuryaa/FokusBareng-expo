@@ -1,9 +1,5 @@
-// Tes database.rules.json di Firebase Emulator. Jalankan: npm run test:rules (butuh Java).
-// Di `npm test` biasa tes ini dilewati. Nomor skenario mengikuti keputusan-aturan.md bagian 6.
-//
-// Tanpa paket tambahan: setiap pemain adalah app Firebase terpisah yang masuk ke Emulator
-// dengan token tiruan (mockUserToken). Rules dimuat dan data disiapkan lewat REST Emulator
-// dengan hak pemilik ("Bearer owner"), yang melewati rules.
+// Tes database.rules.json di Emulator (npm run test:rules, butuh Java); nomor skenario dari keputusan-aturan.md bagian 6.
+// Tiap pemain app Firebase terpisah dengan mockUserToken; data disiapkan lewat REST dengan "Bearer owner".
 import { readFileSync } from 'node:fs'
 import { deleteApp, initializeApp } from 'firebase/app'
 import { connectDatabaseEmulator, get, getDatabase, ref, serverTimestamp, set, update } from 'firebase/database'

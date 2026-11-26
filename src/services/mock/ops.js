@@ -1,6 +1,5 @@
-// Operasi mock dengan pelaku (uid) eksplisit. index.js memakainya untuk pengguna yang masuk,
-// dev.js memakainya untuk lawan tiruan. Setiap operasi memeriksa hal yang sama dengan
-// database.rules.json (struktur-data.md bagian 2), memakai fungsi wasit yang sama.
+// Operasi mock dengan uid eksplisit: index.js untuk pengguna yang masuk, dev.js untuk lawan tiruan.
+// Setiap operasi memeriksa hal yang sama dengan database.rules.json lewat fungsi wasit yang sama.
 
 import { DEMO_RULES, MODES, NORMAL_RULES, SOLO_RULES, getRules } from '../../config/gameRules.js'
 import {
@@ -46,7 +45,7 @@ function requireLobby(room) {
   if (!isLobbyEditable(room, now())) fail(ERROR_CODES.PERMISSION_DENIED, 'Battle sudah dimulai atau room tidak berlaku.')
 }
 
-// ---------- Profil ----------
+// Profil
 
 export function createUser(uid, name) {
   state.db.users[uid] = { profile: { name, createdAt: now() } }
@@ -63,7 +62,7 @@ export function getProfile(uid) {
   return { ...clone(user.profile), ...summarizeHistory(user.history) }
 }
 
-// ---------- Belajar Mandiri ----------
+// Belajar Mandiri
 
 // Cermin rules [USULAN]: hanya pemilik, focusMin tidak melebihi waktu yang benar-benar lewat
 export function saveSoloSession(uid, entry) {
@@ -88,7 +87,7 @@ export function listSoloSessions(uid) {
   return clone(state.db.users[uid]?.solo ?? {})
 }
 
-// ---------- Room ----------
+// Room
 
 export function createRoom(uid, { durationMin = NORMAL_RULES.defaultDurationMin, mode = MODES.NORMAL } = {}) {
   const isDemo = mode === MODES.DEMO

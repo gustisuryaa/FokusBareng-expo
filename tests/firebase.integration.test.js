@@ -1,7 +1,5 @@
-// Tes services Firebase terhadap Emulator Auth dan Realtime Database.
-// Jalankan: npm run test:emulator (butuh Java). Di `npm test` biasa tes ini dilewati.
-// Emulator memuat database.rules.json (firebase.emulator.json), jadi tes ini juga memastikan
-// setiap penulisan services lolos rules asli. Kasus tolak-terima per rules ada di tests/rules.test.js.
+// Tes services di Emulator (npm run test:emulator, butuh Java); dilewati di npm test.
+// Emulator memuat database.rules.json, jadi setiap penulisan services juga diuji terhadap rules asli.
 
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
